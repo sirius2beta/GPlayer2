@@ -1,3 +1,3 @@
-import GPlayer
+import GPlayerNx
 
 gplayer = GPlayer.GPlayer()
