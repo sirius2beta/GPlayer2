@@ -4,14 +4,15 @@ import subprocess
 import time
 import threading
 import socket
+import struct
+
+HEARTBEAT = '\x10'
+FORMAT = '\x20'
+COMMAND = '\x30'
 
 gi.require_version("Gst", "1.0")
 from gi.repository import Gst, GLib, GObject
-
-
-
-
-
+# update
 class GPlayer:
 	def __init__(self):
 		self.BOAT_NAME = 'usv1'
@@ -29,6 +30,8 @@ class GPlayer:
 		self.pipelines_state = []
 		self.camera_format = []
 		self.get_video_format()
+		
+		self._on_msg = None
 		
 		GObject.threads_init()
 		Gst.init(None)
@@ -59,27 +62,45 @@ class GPlayer:
 		self.thread_cli.join()
 		self.thread_ser.join()
 
+	def sendMsg(self, msg):
+		# Send primary heartbeat every 0.5s
+			try:
+				self.client.sendto(msg.encode(),(self.P_CLIENT_IP,self.OUT_PORT))
+				
+				print(f"Primary send to: {self.P_CLIENT_IP}:{self.OUT_PORT}")
+			except:
+				print(f"Primary unreached: {self.P_CLIENT_IP}:{self.OUT_PORT}")
+			# Send secondary heartbeat every 0.5s
+			try:
+				self.client.sendto(msg.encode(),(self.S_CLIENT_IP, self.OUT_PORT))
+				print(f"Secondarysend to: {self.S_CLIENT_IP}:{self.OUT_PORT}")
+			except:
+				print(f"Secondary unreached: {self.S_CLIENT_IP}:{self.OUT_PORT}")
+	
 	def aliveLoop(self):
 		print('client started...')
 		run = True
+		checkAlive = False
 		while run:
 			if self.thread_terminate is True:
 				break
-			beat = 'alive ' + self.BOAT_NAME
+			#beat = b'\x10' + self.BOAT_NAME.encode()
+			beat = b'\x10'
 			# Send primary heartbeat every 0.5s
 			try:
-				self.client.sendto(beat.encode(),(self.P_CLIENT_IP,self.OUT_PORT))
+				self.client.sendto(beat,(self.P_CLIENT_IP,self.OUT_PORT))
 				time.sleep(0.5)
 				print(f"Primary send to: {self.P_CLIENT_IP}:{self.OUT_PORT}")
 			except:
 				print(f"Primary unreached: {self.P_CLIENT_IP}:{self.OUT_PORT}")
 			# Send secondary heartbeat every 0.5s
 			try:
-				self.client.sendto(beat.encode(),(self.S_CLIENT_IP, self.OUT_PORT))
+				self.client.sendto(beat,(self.S_CLIENT_IP, self.OUT_PORT))
 				time.sleep(0.5)
 				print(f"Secondarysend to: {self.S_CLIENT_IP}:{self.OUT_PORT}")
 			except:
 				print(f"Secondary unreached: {self.S_CLIENT_IP}:{self.OUT_PORT}")
+			
 
 	def createPipelines(self):
 		for i in self.camera_format:
@@ -95,6 +116,28 @@ class GPlayer:
 
 #get video format from existing camera devices
 	def get_video_format(self):	
+		#Check camera device
+		for i in range(0,10):
+				try:
+					cmd = "v4l2-ctl -d /dev/video{} --list-formats-ext".format(i)
+					returned_value = subprocess.check_output(cmd,shell=True).replace(b'\t',b'').decode("utf-8")  # returns the exit code in unix
+				except:
+					continue
+				line_list = returned_value.splitlines()
+				new_line_list = list()
+				for j in line_list:
+					if len(j.split()) == 0:
+						continue
+					elif j.split()[0][0] =='[':
+						form = j.split()[1][1:-1]
+					elif j.split()[0] =='Size:':
+						size = j.split()[2]
+						width, height = size.split('x')
+					elif j.split()[0] == 'Interval:':
+						self.camera_format.append('video{} {} width={} height={} framerate={}'.format(i,form, width, height , j.split()[3][1:].split('.')[0]))
+						print('video{} {} width={} height={} framerate={}'.format(i,form, width, height , j.split()[3][1:].split('.')[0]))
+	
+	def get_video_format_for_diffNx(self):	
 		#Check camera device
 		for i in range(0,10):
 				try:
@@ -123,28 +166,31 @@ class GPlayer:
 				break
 			try:
 				indata, addr = self.server.recvfrom(1024)
-				indata = indata.decode()
+				
 			except:
 				continue
 
-			#print(f'message from: {str(addr)}, data: {indata}')
-			header = indata.split()[0]
-
-			if header == 'HB':
-				self.BOAT_NAME = indata.split()[2]
-				primary = indata.split()[3]
+			print(f'message from: {str(addr)}, data: {indata}')
+			
+			indata = indata.decode()
+			header = indata[0]
+			indata = indata[1:]
+			if header == HEARTBEAT:
+				print("HB")
+				self.BOAT_NAME = indata.split()[1]
+				primary = indata.split()[2]
 				if primary == 'P':
-					self.P_CLIENT_IP = indata.split()[1]
+					self.P_CLIENT_IP = indata.split()[0]
 				else:
-					self.S_CLIENT_IP = indata.split()[1]
+					self.S_CLIENT_IP = indata.split()[0]
 
-			if header == 'qformat':
+			elif header == FORMAT:
 				print("format")
 				msg = 'format '+self.BOAT_NAME+'\n'+'\n'.join(self.camera_format)
 
 				self.client.sendto(msg.encode(),(self.P_CLIENT_IP,self.OUT_PORT))
 				self.client.sendto(msg.encode(),(self.S_CLIENT_IP,self.OUT_PORT))
-			if header == 'cmd':
+			elif header == COMMAND:
 				print("cmd")
 				print(indata)
 				cformat = indata.split()[1:6]
@@ -163,7 +209,7 @@ class GPlayer:
 						if mid != 'nan':
 							gstring += (mid+' ! ')
 						if encoder == 'h264':
-							gstring +=' videoconvert ! omxh264enc ! rtph264pay pt=96 config-interval=1 ! udpsink host={} port={}'.format(ip, port)	
+							gstring +='nvvideoconvert ! nvv4l2h264enc ! rtph264pay pt=96 config-interval=1 ! udpsink host={} port={}'.format(ip, port)	
 						else:
 							gstring +='jpegenc quality=30 ! rtpjpegpay ! udpsink host={} port={}'.format(ip, port)
 					elif cformat[1] == 'MJPG':
@@ -171,7 +217,7 @@ class GPlayer:
 						if mid != 'nan':
 							gstring += (mid+' ! ')
 						if encoder == 'h264':
-							gstring +=' jpegparse ! jpegdec ! videoconvert ! omxh264enc ! rtph264pay pt=96 config-interval=1 ! udpsink host={} port={}'.format(ip, port)	
+							gstring +='jpegparse ! jpegdec ! videoconvert ! videoconvert   ! nvvideoconvert ! nvv4l2h264enc ! rtph264pay pt=96 config-interval=1 ! udpsink host={} port={}'.format(ip, port)	
 						else:
 							gstring +='jpegparse ! jpegdec ! jpegenc quality=30 ! rtpjpegpay ! udpsink host={} port={}'.format(ip, port)
 
@@ -216,16 +262,39 @@ class GPlayer:
 						self.pipelines[videoindex] = Gst.parse_launch(gstring)
 						self.pipelines[videoindex].set_state(Gst.State.PLAYING)
 						self.pipelines_state[videoindex] = True
-			if header == 'quit':
+			elif header == 'quit':
 				video = int(indata.split()[1][5:])
 				if video in self.pipelinesexist:
 					videoindex = self.pipelinesexist.index(video)
 					self.pipelines[videoindex].set_state(Gst.State.NULL)
 					self.pipelines_state[videoindex] = False
 					print("quit : video"+str(video))
+			elif self.on_msg:
+				try:
+					#on_msg(header, message)
+					indata = indata.split()
+					indata.pop(0)
+					indata = " ".join(indata)
+					self.on_msg(header, indata)
+					print('on msg')
+				except Exception as err:
+					print(f'error on_msg callback function: {err}')
 
 
-
+	@property
+	def on_msg(self):
+		return self._on_msg
+	
+	@on_msg.setter
+	def on_msg(self, func):
+		self._on_msg = func
+	
+	def on_msg_callback(self):
+		def decorator(func):
+			self.on_msg = func
+			return func
+		return decorator
+			
 
 # The callback for when a PUBLISH message is received from the server.
 
