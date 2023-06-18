@@ -6,9 +6,9 @@ import threading
 import socket
 import struct
 
-HEARTBEAT = '\x10'
-FORMAT = '\x20'
-COMMAND = '\x30'
+HEARTBEAT = b'\x10'
+FORMAT = b'\x20'
+COMMAND = b'\x30'
 
 gi.require_version("Gst", "1.0")
 from gi.repository import Gst, GLib, GObject
@@ -172,10 +172,11 @@ class GPlayer:
 
 			print(f'message from: {str(addr)}, data: {indata}')
 			
-			indata = indata.decode()
+			indata = indata
 			header = indata[0]
-			indata = indata[1:]
-			if header == HEARTBEAT:
+			print(header)
+			indata = indata[1:].decode()
+			if header == HEARTBEAT[0]:
 				print("HB")
 				self.BOAT_NAME = indata.split()[1]
 				primary = indata.split()[2]
@@ -184,20 +185,21 @@ class GPlayer:
 				else:
 					self.S_CLIENT_IP = indata.split()[0]
 
-			elif header == FORMAT:
+			elif header == FORMAT[0]:
 				print("format")
-				msg = 'format '+self.BOAT_NAME+'\n'+'\n'.join(self.camera_format)
+				msg = self.BOAT_NAME+'\n'+'\n'.join(self.camera_format)
+				msg = FORMAT + msg.encode()
 
-				self.client.sendto(msg.encode(),(self.P_CLIENT_IP,self.OUT_PORT))
-				self.client.sendto(msg.encode(),(self.S_CLIENT_IP,self.OUT_PORT))
-			elif header == COMMAND:
+				self.client.sendto(msg,(self.P_CLIENT_IP,self.OUT_PORT))
+				self.client.sendto(msg,(self.S_CLIENT_IP,self.OUT_PORT))
+			elif header == COMMAND[0]:
 				print("cmd")
 				print(indata)
-				cformat = indata.split()[1:6]
+				cformat = indata.split()[:5]
 
 				print(cformat)
-				encoder, mid, quality, ip, port = indata.split()[6:]
-				print(quality, ip, port)
+				encoder, mid, quality, ip, port = indata.split()[5:]
+				#print(quality, ip, port)
 
 				if(' '.join(cformat) not in self.camera_format):
 					print('format error')
