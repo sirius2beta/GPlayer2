@@ -13,6 +13,61 @@ COMMAND = b'\x30'
 gi.require_version("Gst", "1.0")
 from gi.repository import Gst, GLib, GObject
 # update
+def getFormatCMD(sys, format, width, height, framerate, IP, port):
+		gstring = 'v4l2src device=/dev/'+cformat[0]
+		if cformat[1] == 'YUYV':
+			cformat[1] = 'YUY2'
+			gstring += ' num-buffers=-1 ! video/x-raw,format={},width={},height={},framerate={}/1 ! '.format(format, width, height, framerate)
+			if mid != 'nan':
+				gstring += (mid+' ! ')
+			if encoder == 'h264':
+				if sys == 'buster':
+					gstring +=' videoconvert ! omxh264enc ! rtph264pay pt=96 config-interval=1 ! udpsink host={} port={}'.format(ip, port)
+				else:
+					gstring +='nvvideoconvert ! nvv4l2h264enc ! rtph264pay pt=96 config-interval=1 ! udpsink host={} port={}'.format(IP, port)	
+			else:
+				gstring +='jpegenc quality=30 ! rtpjpegpay ! udpsink host={} port={}'.format(IP, port)
+		elif cformat[1] == 'MJPG':
+			gstring += ' num-buffers=-1 ! image/jpeg,width={},height={},framerate={}/1 ! '.format(width, height, framerate)
+			if mid != 'nan':
+				gstring += (mid+' ! ')
+			if encoder == 'h264':
+				if sys == 'buster':
+					gstring +=' jpegparse ! jpegdec ! videoconvert ! omxh264enc ! rtph264pay pt=96 config-interval=1 ! udpsink host={} port={}'.format(ip, port)
+				else:
+					gstring +='jpegparse ! jpegdec ! videoconvert ! videoconvert   ! nvvideoconvert ! nvv4l2h264enc ! rtph264pay pt=96 config-interval=1 ! udpsink host={} port={}'.format(IP, port)	
+			else:
+				gstring +='jpegparse ! jpegdec ! jpegenc quality=30 ! rtpjpegpay ! udpsink host={} port={}'.format(IP, port)
+
+		elif cformat[1] == 'GREY':
+			gstring += ' num-buffers=-1 ! video/x-raw,format=GRAY8 ! videoscale ! videoconvert ! video/x-raw, format=YUY2, width=640,height=480 ! '
+			if mid != 'nan':
+				gstring += (mid+' ! ')
+			if encoder == 'h264':
+				if sys == 'buster':
+					gstring +='videoconvert ! omxh264enc ! rtph264pay pt=96 config-interval=1 ! udpsink host={} port={}'.format(ip, port)
+				else:
+					gstring +='videoconvert !  nvvideoconvert ! nvv4l2h264enc ! rtph264pay pt=96 config-interval=1 ! udpsink host={} port={}'.format(ip, port)
+
+			else:
+				gstring +='jpegenc quality=30 ! rtpjpegpay ! udpsink host={} port={}'.format(IP, port)
+		else:
+			if cformat[1] == 'RGBP':
+				cformat[1] = 'RGB16'
+			elif cformat[1] == 'BGR8':
+				cformat[1] = 'BGR'
+			elif cformat[1] == 'Y1':
+				cformat[1] = 'UYVY'
+			gstring += ' num-buffers=-1 ! video/x-raw,format={}! videoscale ! videoconvert ! video/x-raw, format=YUY2, width=640,height=480 ! '.format(format)
+			if mid != 'nan':
+				gstring += (mid+' ! ')
+			if encoder == 'h264':
+				gstring +='videoconvert ! omxh264enc ! rtph264pay pt=96 config-interval=1 ! udpsink host={} port={}'.format(IP, port)
+
+			else:
+				gstring +='jpegenc quality=30 ! rtpjpegpay ! udpsink host={} port={}'.format(IP, port)
+
+
 class GPlayer:
 	def __init__(self):
 		self.BOAT_NAME = 'usv1'
@@ -168,60 +223,7 @@ class GPlayer:
 					elif j.split()[0] == 'Interval:':
 						self.camera_format.append('video{} {} width={} height={} framerate={}'.format(i,form, width, height , j.split()[3][1:].split('.')[0]))
 						print('video{} {} width={} height={} framerate={}'.format(i,form, width, height , j.split()[3][1:].split('.')[0]))
-	def getFormatCMD(sys, format, width, height, framerate, IP, port):
-		gstring = 'v4l2src device=/dev/'+cformat[0]
-		if cformat[1] == 'YUYV':
-			cformat[1] = 'YUY2'
-			gstring += ' num-buffers=-1 ! video/x-raw,format={},width={},height={},framerate={}/1 ! '.format(format, width, height, framerate)
-			if mid != 'nan':
-				gstring += (mid+' ! ')
-			if encoder == 'h264':
-				if sys == 'buster':
-					gstring +=' videoconvert ! omxh264enc ! rtph264pay pt=96 config-interval=1 ! udpsink host={} port={}'.format(ip, port)
-				else:
-					gstring +='nvvideoconvert ! nvv4l2h264enc ! rtph264pay pt=96 config-interval=1 ! udpsink host={} port={}'.format(IP, port)	
-			else:
-				gstring +='jpegenc quality=30 ! rtpjpegpay ! udpsink host={} port={}'.format(IP, port)
-		elif cformat[1] == 'MJPG':
-			gstring += ' num-buffers=-1 ! image/jpeg,width={},height={},framerate={}/1 ! '.format(width, height, framerate)
-			if mid != 'nan':
-				gstring += (mid+' ! ')
-			if encoder == 'h264':
-				if sys == 'buster':
-					gstring +=' jpegparse ! jpegdec ! videoconvert ! omxh264enc ! rtph264pay pt=96 config-interval=1 ! udpsink host={} port={}'.format(ip, port)
-				else:
-					gstring +='jpegparse ! jpegdec ! videoconvert ! videoconvert   ! nvvideoconvert ! nvv4l2h264enc ! rtph264pay pt=96 config-interval=1 ! udpsink host={} port={}'.format(IP, port)	
-			else:
-				gstring +='jpegparse ! jpegdec ! jpegenc quality=30 ! rtpjpegpay ! udpsink host={} port={}'.format(IP, port)
-
-		elif cformat[1] == 'GREY':
-			gstring += ' num-buffers=-1 ! video/x-raw,format=GRAY8 ! videoscale ! videoconvert ! video/x-raw, format=YUY2, width=640,height=480 ! '
-			if mid != 'nan':
-				gstring += (mid+' ! ')
-			if encoder == 'h264':
-				if sys == 'buster':
-					gstring +='videoconvert ! omxh264enc ! rtph264pay pt=96 config-interval=1 ! udpsink host={} port={}'.format(ip, port)
-				else:
-					gstring +='videoconvert !  nvvideoconvert ! nvv4l2h264enc ! rtph264pay pt=96 config-interval=1 ! udpsink host={} port={}'.format(ip, port)
-
-			else:
-				gstring +='jpegenc quality=30 ! rtpjpegpay ! udpsink host={} port={}'.format(IP, port)
-		else:
-			if cformat[1] == 'RGBP':
-				cformat[1] = 'RGB16'
-			elif cformat[1] == 'BGR8':
-				cformat[1] = 'BGR'
-			elif cformat[1] == 'Y1':
-				cformat[1] = 'UYVY'
-			gstring += ' num-buffers=-1 ! video/x-raw,format={}! videoscale ! videoconvert ! video/x-raw, format=YUY2, width=640,height=480 ! '.format(format)
-			if mid != 'nan':
-				gstring += (mid+' ! ')
-			if encoder == 'h264':
-				gstring +='videoconvert ! omxh264enc ! rtph264pay pt=96 config-interval=1 ! udpsink host={} port={}'.format(IP, port)
-
-			else:
-				gstring +='jpegenc quality=30 ! rtpjpegpay ! udpsink host={} port={}'.format(IP, port)
-
+	
 
 	
 	def listenLoop(self):
