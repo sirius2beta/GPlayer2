@@ -13,7 +13,7 @@ COMMAND = b'\x30'
 gi.require_version("Gst", "1.0")
 from gi.repository import Gst, GLib, GObject
 # update
-def getFormatCMD(sys, cam, format, width, height, framerate, IP, port):
+def getFormatCMD(sys, cam, format, width, height, framerate, encoder, IP, port):
 		gstring = 'v4l2src device=/dev/'+cam
 		mid = 'nan'
 		if format == 'YUYV':
@@ -273,7 +273,7 @@ class GPlayer:
 				if(' '.join(cformat) not in self.camera_format):
 					print('format error')
 				else:
-					gstring = getFormatCMD('buster', cformat[0], cformat[1], cformat[2].split('=')[1], cformat[3].split('=')[1],cformat[4].split('=')[1], ip, port)
+					gstring = getFormatCMD('buster', cformat[0], cformat[1], cformat[2].split('=')[1], cformat[3].split('=')[1],cformat[4].split('=')[1], encoder, ip, port)
 					print(gstring)
 					print(cformat[1])
 					print(cformat[1][5:])
