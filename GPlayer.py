@@ -67,6 +67,7 @@ def getFormatCMD(sys, cam, format, width, height, framerate, encoder, IP, port):
 
 			else:
 				gstring +='jpegenc quality=30 ! rtpjpegpay ! udpsink host={} port={}'.format(IP, port)
+		return gstring
 
 
 class GPlayer:
