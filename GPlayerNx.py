@@ -117,15 +117,15 @@ class GPlayer:
 #get video format from existing camera devices
 	def get_video_format(self):
 		try:
-				cmd = " grep '^VERSION_CODENAME=' /etc/os-release"
-				returned_value = subprocess.check_output(cmd,shell=True).replace(b'\t',b'').decode("utf-8") 
-				except:
-					continue
-				sys = returned_value.split('=')[1]
-				if sys == 'buster':
-					print('system: buster')
-				else:
-					print(f'system: {sys}')
+			cmd = " grep '^VERSION_CODENAME=' /etc/os-release"
+			returned_value = subprocess.check_output(cmd,shell=True).replace(b'\t',b'').decode("utf-8") 
+		except:
+			continue
+		sys = returned_value.split('=')[1]
+		if sys == 'buster':
+			print('system: buster')
+		else:
+			print(f'system: {sys}')
 		#Check camera device
 		for i in range(0,10):
 				
