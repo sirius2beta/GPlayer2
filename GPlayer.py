@@ -13,8 +13,8 @@ COMMAND = b'\x30'
 gi.require_version("Gst", "1.0")
 from gi.repository import Gst, GLib, GObject
 # update
-def getFormatCMD(sys, format, width, height, framerate, IP, port):
-		gstring = 'v4l2src device=/dev/'+cformat[0]
+def getFormatCMD(sys, cam, format, width, height, framerate, IP, port):
+		gstring = 'v4l2src device=/dev/'+cam
 		if cformat[1] == 'YUYV':
 			cformat[1] = 'YUY2'
 			gstring += ' num-buffers=-1 ! video/x-raw,format={},width={},height={},framerate={}/1 ! '.format(format, width, height, framerate)
@@ -22,7 +22,7 @@ def getFormatCMD(sys, format, width, height, framerate, IP, port):
 				gstring += (mid+' ! ')
 			if encoder == 'h264':
 				if sys == 'buster':
-					gstring +=' videoconvert ! omxh264enc ! rtph264pay pt=96 config-interval=1 ! udpsink host={} port={}'.format(ip, port)
+					gstring +=' videoconvert ! omxh264enc ! rtph264pay pt=96 config-interval=1 ! udpsink host={} port={}'.format(IP, port)
 				else:
 					gstring +='nvvideoconvert ! nvv4l2h264enc ! rtph264pay pt=96 config-interval=1 ! udpsink host={} port={}'.format(IP, port)	
 			else:
@@ -33,7 +33,7 @@ def getFormatCMD(sys, format, width, height, framerate, IP, port):
 				gstring += (mid+' ! ')
 			if encoder == 'h264':
 				if sys == 'buster':
-					gstring +=' jpegparse ! jpegdec ! videoconvert ! omxh264enc ! rtph264pay pt=96 config-interval=1 ! udpsink host={} port={}'.format(ip, port)
+					gstring +=' jpegparse ! jpegdec ! videoconvert ! omxh264enc ! rtph264pay pt=96 config-interval=1 ! udpsink host={} port={}'.format(IP, port)
 				else:
 					gstring +='jpegparse ! jpegdec ! videoconvert ! videoconvert   ! nvvideoconvert ! nvv4l2h264enc ! rtph264pay pt=96 config-interval=1 ! udpsink host={} port={}'.format(IP, port)	
 			else:
@@ -45,9 +45,9 @@ def getFormatCMD(sys, format, width, height, framerate, IP, port):
 				gstring += (mid+' ! ')
 			if encoder == 'h264':
 				if sys == 'buster':
-					gstring +='videoconvert ! omxh264enc ! rtph264pay pt=96 config-interval=1 ! udpsink host={} port={}'.format(ip, port)
+					gstring +='videoconvert ! omxh264enc ! rtph264pay pt=96 config-interval=1 ! udpsink host={} port={}'.format(IP, port)
 				else:
-					gstring +='videoconvert !  nvvideoconvert ! nvv4l2h264enc ! rtph264pay pt=96 config-interval=1 ! udpsink host={} port={}'.format(ip, port)
+					gstring +='videoconvert !  nvvideoconvert ! nvv4l2h264enc ! rtph264pay pt=96 config-interval=1 ! udpsink host={} port={}'.format(IP, port)
 
 			else:
 				gstring +='jpegenc quality=30 ! rtpjpegpay ! udpsink host={} port={}'.format(IP, port)
@@ -272,7 +272,7 @@ class GPlayer:
 				if(' '.join(cformat) not in self.camera_format):
 					print('format error')
 				else:
-					gstring = getFormatCMD('buster', cformat[1],cformat[2].split('=')[1],cformat[3].split('=')[1],cformat[4].split('=')[1], ip, port)
+					gstring = getFormatCMD('buster', cformat[0], cformat[1], cformat[2].split('=')[1], cformat[3].split('=')[1],cformat[4].split('=')[1], ip, port)
 					print(gstring)
 					print(cformat[1])
 					print(cformat[1][5:])
