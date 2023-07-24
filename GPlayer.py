@@ -6,9 +6,9 @@ import threading
 import socket
 import struct
 
-HEARTBEAT = '\x10'
-FORMAT = '\x20'
-COMMAND = '\x30'
+HEARTBEAT = b'\x10'
+FORMAT = b'\x20'
+COMMAND = b'\x30'
 
 gi.require_version("Gst", "1.0")
 from gi.repository import Gst, GLib, GObject
@@ -158,6 +158,53 @@ class GPlayer:
 					elif j.split()[0] == 'Interval:':
 						self.camera_format.append('video{} {} width={} height={} framerate={}'.format(i,form, width, height , j.split()[3][1:].split('.')[0]))
 						print('video{} {} width={} height={} framerate={}'.format(i,form, width, height , j.split()[3][1:].split('.')[0]))
+	def getFormatCMD(sys, format, width, height, framerate, IP, port):
+		gstring = 'v4l2src device=/dev/'+cformat[0]
+		if cformat[1] == 'YUYV':
+			cformat[1] = 'YUY2'
+			gstring += ' num-buffers=-1 ! video/x-raw,format={},width={},height={},framerate={}/1 ! '.format(format, width, height, framerate)
+			if mid != 'nan':
+				gstring += (mid+' ! ')
+			if encoder == 'h264':
+				gstring +='nvvideoconvert ! nvv4l2h264enc ! rtph264pay pt=96 config-interval=1 ! udpsink host={} port={}'.format(IP, port)	
+			else:
+				gstring +='jpegenc quality=30 ! rtpjpegpay ! udpsink host={} port={}'.format(IP, port)
+		elif cformat[1] == 'MJPG':
+			gstring += ' num-buffers=-1 ! image/jpeg,width={},height={},framerate={}/1 ! '.format(width, height, framerate)
+			if mid != 'nan':
+				gstring += (mid+' ! ')
+			if encoder == 'h264':
+				gstring +='jpegparse ! jpegdec ! videoconvert ! videoconvert   ! nvvideoconvert ! nvv4l2h264enc ! rtph264pay pt=96 config-interval=1 ! udpsink host={} port={}'.format(IP, port)	
+			else:
+				gstring +='jpegparse ! jpegdec ! jpegenc quality=30 ! rtpjpegpay ! udpsink host={} port={}'.format(IP, port)
+
+		elif cformat[1] == 'GREY':
+			gstring += ' num-buffers=-1 ! video/x-raw,format=GRAY8 ! videoscale ! videoconvert ! video/x-raw, format=YUY2, width=640,height=480 ! '
+			if mid != 'nan':
+				gstring += (mid+' ! ')
+			if encoder == 'h264':
+				gstring +='videoconvert ! omxh264enc ! rtph264pay pt=96 config-interval=1 ! udpsink host={} port={}'.format(ip, port)
+
+			else:
+				gstring +='jpegenc quality=30 ! rtpjpegpay ! udpsink host={} port={}'.format(IP, port)
+		else:
+			if cformat[1] == 'RGBP':
+				cformat[1] = 'RGB16'
+			elif cformat[1] == 'BGR8':
+				cformat[1] = 'BGR'
+			elif cformat[1] == 'Y1':
+				cformat[1] = 'UYVY'
+			gstring += ' num-buffers=-1 ! video/x-raw,format={}! videoscale ! videoconvert ! video/x-raw, format=YUY2, width=640,height=480 ! '.format(format)
+			if mid != 'nan':
+				gstring += (mid+' ! ')
+			if encoder == 'h264':
+				gstring +='videoconvert ! omxh264enc ! rtph264pay pt=96 config-interval=1 ! udpsink host={} port={}'.format(IP, port)
+
+			else:
+				gstring +='jpegenc quality=30 ! rtpjpegpay ! udpsink host={} port={}'.format(IP, port)
+
+
+	
 	def listenLoop(self):
 		print('server started...')
 		run = True
@@ -172,10 +219,11 @@ class GPlayer:
 
 			print(f'message from: {str(addr)}, data: {indata}')
 			
-			indata = indata.decode()
+			indata = indata
 			header = indata[0]
-			indata = indata[1:]
-			if header == HEARTBEAT:
+			print(header)
+			indata = indata[1:].decode()
+			if header == HEARTBEAT[0]:
 				print("HB")
 				self.BOAT_NAME = indata.split()[1]
 				primary = indata.split()[2]
@@ -184,69 +232,26 @@ class GPlayer:
 				else:
 					self.S_CLIENT_IP = indata.split()[0]
 
-			elif header == FORMAT:
+			elif header == FORMAT[0]:
 				print("format")
-				msg = 'format '+self.BOAT_NAME+'\n'+'\n'.join(self.camera_format)
+				msg = self.BOAT_NAME+'\n'+'\n'.join(self.camera_format)
+				msg = FORMAT + msg.encode()
 
-				self.client.sendto(msg.encode(),(self.P_CLIENT_IP,self.OUT_PORT))
-				self.client.sendto(msg.encode(),(self.S_CLIENT_IP,self.OUT_PORT))
-			elif header == COMMAND:
+				self.client.sendto(msg,(self.P_CLIENT_IP,self.OUT_PORT))
+				self.client.sendto(msg,(self.S_CLIENT_IP,self.OUT_PORT))
+			elif header == COMMAND[0]:
 				print("cmd")
 				print(indata)
-				cformat = indata.split()[1:6]
+				cformat = indata.split()[:5]
 
 				print(cformat)
-				encoder, mid, quality, ip, port = indata.split()[6:]
-				print(quality, ip, port)
+				encoder, mid, quality, ip, port = indata.split()[5:]
+				#print(quality, ip, port)
 
 				if(' '.join(cformat) not in self.camera_format):
 					print('format error')
 				else:
-					gstring = 'v4l2src device=/dev/'+cformat[0]
-					if cformat[1] == 'YUYV':
-						cformat[1] = 'YUY2'
-						gstring += ' num-buffers=-1 ! video/x-raw,format={},width={},height={},framerate={}/1 ! '.format(cformat[1],cformat[2].split('=')[1],cformat[3].split('=')[1],cformat[4].split('=')[1])
-						if mid != 'nan':
-							gstring += (mid+' ! ')
-						if encoder == 'h264':
-							gstring +=' videoconvert ! omxh264enc ! rtph264pay pt=96 config-interval=1 ! udpsink host={} port={}'.format(ip, port)	
-						else:
-							gstring +='jpegenc quality=30 ! rtpjpegpay ! udpsink host={} port={}'.format(ip, port)
-					elif cformat[1] == 'MJPG':
-						gstring += ' num-buffers=-1 ! image/jpeg,width={},height={},framerate={}/1 ! '.format(cformat[2].split('=')[1],cformat[3].split('=')[1],cformat[4].split('=')[1])
-						if mid != 'nan':
-							gstring += (mid+' ! ')
-						if encoder == 'h264':
-							gstring +=' jpegparse ! jpegdec ! videoconvert ! omxh264enc ! rtph264pay pt=96 config-interval=1 ! udpsink host={} port={}'.format(ip, port)	
-						else:
-							gstring +='jpegparse ! jpegdec ! jpegenc quality=30 ! rtpjpegpay ! udpsink host={} port={}'.format(ip, port)
-
-					elif cformat[1] == 'GREY':
-						gstring += ' num-buffers=-1 ! video/x-raw,format=GRAY8 ! videoscale ! videoconvert ! video/x-raw, format=YUY2, width=640,height=480 ! '
-						if mid != 'nan':
-							gstring += (mid+' ! ')
-						if encoder == 'h264':
-							gstring +='videoconvert ! omxh264enc ! rtph264pay pt=96 config-interval=1 ! udpsink host={} port={}'.format(ip, port)
-
-						else:
-							gstring +='jpegenc quality=30 ! rtpjpegpay ! udpsink host={} port={}'.format(ip, port)
-					else:
-						if cformat[1] == 'RGBP':
-							cformat[1] = 'RGB16'
-						elif cformat[1] == 'BGR8':
-							cformat[1] = 'BGR'
-						elif cformat[1] == 'Y1':
-							cformat[1] = 'UYVY'
-						gstring += ' num-buffers=-1 ! video/x-raw,format={}! videoscale ! videoconvert ! video/x-raw, format=YUY2, width=640,height=480 ! '.format(cformat[1])
-						if mid != 'nan':
-							gstring += (mid+' ! ')
-						if encoder == 'h264':
-							gstring +='videoconvert ! omxh264enc ! rtph264pay pt=96 config-interval=1 ! udpsink host={} port={}'.format(ip, port)
-
-						else:
-							gstring +='jpegenc quality=30 ! rtpjpegpay ! udpsink host={} port={}'.format(ip, port)
-
-
+					gstring = getFormatCMD('buster', cformat[1],cformat[2].split('=')[1],cformat[3].split('=')[1],cformat[4].split('=')[1], ip, port)
 					print(gstring)
 					print(cformat[1])
 					print(cformat[1][5:])
@@ -297,8 +302,3 @@ class GPlayer:
 			
 
 # The callback for when a PUBLISH message is received from the server.
-
-
-
-
-
