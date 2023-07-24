@@ -120,6 +120,16 @@ class GPlayer:
 		for i in range(0,10):
 				try:
 					cmd = "v4l2-ctl -d /dev/video{} --list-formats-ext".format(i)
+					returned_value = subprocess.check_output(cmd,shell=True).replace(b'\t',b'').decode("utf-8") 
+				except:
+					continue
+				system = returned_value.splitlines('=')
+				if system == 'buster':
+					print('system: buster')
+				else:
+					print(f'system: {system}')
+				try:
+					cmd = "v4l2-ctl -d /dev/video{} --list-formats-ext".format(i)
 					returned_value = subprocess.check_output(cmd,shell=True).replace(b'\t',b'').decode("utf-8")  # returns the exit code in unix
 				except:
 					continue
