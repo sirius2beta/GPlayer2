@@ -119,11 +119,11 @@ class GPlayer:
 		#Check camera device
 		for i in range(0,10):
 				try:
-					cmd = "v4l2-ctl -d /dev/video{} --list-formats-ext".format(i)
+					cmd = " grep '^VERSION_CODENAME=' /etc/os-release"
 					returned_value = subprocess.check_output(cmd,shell=True).replace(b'\t',b'').decode("utf-8") 
 				except:
 					continue
-				system = returned_value.splitlines('=')
+				system = returned_value.splitlines('=')[1]
 				if system == 'buster':
 					print('system: buster')
 				else:
