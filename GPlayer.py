@@ -115,7 +115,17 @@ class GPlayer:
 	
 
 #get video format from existing camera devices
-	def get_video_format(self):	
+	def get_video_format(self):
+		try:
+			cmd = " grep '^VERSION_CODENAME=' /etc/os-release"
+			returned_value = subprocess.check_output(cmd,shell=True).replace(b'\t',b'').decode("utf-8") 
+		except:
+			returned_value = '0'
+		sys = returned_value.split('=')[1]
+		if sys == 'buster':
+			print('system: buster')
+		else:
+			print(f'system: {sys}')
 		#Check camera device
 		for i in range(0,10):
 				try:
@@ -166,7 +176,10 @@ class GPlayer:
 			if mid != 'nan':
 				gstring += (mid+' ! ')
 			if encoder == 'h264':
-				gstring +='nvvideoconvert ! nvv4l2h264enc ! rtph264pay pt=96 config-interval=1 ! udpsink host={} port={}'.format(IP, port)	
+				if sys == 'buster':
+					gstring +=' videoconvert ! omxh264enc ! rtph264pay pt=96 config-interval=1 ! udpsink host={} port={}'.format(ip, port)
+				else:
+					gstring +='nvvideoconvert ! nvv4l2h264enc ! rtph264pay pt=96 config-interval=1 ! udpsink host={} port={}'.format(IP, port)	
 			else:
 				gstring +='jpegenc quality=30 ! rtpjpegpay ! udpsink host={} port={}'.format(IP, port)
 		elif cformat[1] == 'MJPG':
@@ -174,7 +187,10 @@ class GPlayer:
 			if mid != 'nan':
 				gstring += (mid+' ! ')
 			if encoder == 'h264':
-				gstring +='jpegparse ! jpegdec ! videoconvert ! videoconvert   ! nvvideoconvert ! nvv4l2h264enc ! rtph264pay pt=96 config-interval=1 ! udpsink host={} port={}'.format(IP, port)	
+				if sys == 'buster':
+					gstring +=' jpegparse ! jpegdec ! videoconvert ! omxh264enc ! rtph264pay pt=96 config-interval=1 ! udpsink host={} port={}'.format(ip, port)
+				else:
+					gstring +='jpegparse ! jpegdec ! videoconvert ! videoconvert   ! nvvideoconvert ! nvv4l2h264enc ! rtph264pay pt=96 config-interval=1 ! udpsink host={} port={}'.format(IP, port)	
 			else:
 				gstring +='jpegparse ! jpegdec ! jpegenc quality=30 ! rtpjpegpay ! udpsink host={} port={}'.format(IP, port)
 
@@ -183,7 +199,10 @@ class GPlayer:
 			if mid != 'nan':
 				gstring += (mid+' ! ')
 			if encoder == 'h264':
-				gstring +='videoconvert ! omxh264enc ! rtph264pay pt=96 config-interval=1 ! udpsink host={} port={}'.format(ip, port)
+				if sys == 'buster':
+					gstring +='videoconvert ! omxh264enc ! rtph264pay pt=96 config-interval=1 ! udpsink host={} port={}'.format(ip, port)
+				else:
+					gstring +='videoconvert !  nvvideoconvert ! nvv4l2h264enc ! rtph264pay pt=96 config-interval=1 ! udpsink host={} port={}'.format(ip, port)
 
 			else:
 				gstring +='jpegenc quality=30 ! rtpjpegpay ! udpsink host={} port={}'.format(IP, port)
