@@ -15,6 +15,7 @@ from gi.repository import Gst, GLib, GObject
 # update
 def getFormatCMD(sys, cam, format, width, height, framerate, IP, port):
 		gstring = 'v4l2src device=/dev/'+cam
+		mid = 'nan'
 		if format == 'YUYV':
 			format = 'YUY2'
 			gstring += ' num-buffers=-1 ! video/x-raw,format={},width={},height={},framerate={}/1 ! '.format(format, width, height, framerate)
