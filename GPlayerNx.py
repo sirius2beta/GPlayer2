@@ -123,8 +123,8 @@ class GPlayer:
 					returned_value = subprocess.check_output(cmd,shell=True).replace(b'\t',b'').decode("utf-8") 
 				except:
 					continue
-				system = returned_value.splitlines('=')[1]
-				if system == 'buster':
+				sys = returned_value.splitlines('=')[1]
+				if sys == 'buster':
 					print('system: buster')
 				else:
 					print(f'system: {system}')
