@@ -120,7 +120,7 @@ class GPlayer:
 			cmd = " grep '^VERSION_CODENAME=' /etc/os-release"
 			returned_value = subprocess.check_output(cmd,shell=True).replace(b'\t',b'').decode("utf-8") 
 		except:
-			continue
+			returned_value = '0'
 		sys = returned_value.split('=')[1]
 		if sys == 'buster':
 			print('system: buster')
