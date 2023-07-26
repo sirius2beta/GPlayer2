@@ -9,6 +9,8 @@ import struct
 HEARTBEAT = b'\x10'
 FORMAT = b'\x20'
 COMMAND = b'\x30'
+QUIT = b'\x40'
+SENSOR = b'\x50'
 
 gi.require_version("Gst", "1.0")
 from gi.repository import Gst, GLib, GObject
@@ -297,14 +299,14 @@ class GPlayer:
 						self.pipelines[videoindex] = Gst.parse_launch(gstring)
 						self.pipelines[videoindex].set_state(Gst.State.PLAYING)
 						self.pipelines_state[videoindex] = True
-			elif header == 'quit':
+			elif header == QUIT[0]:
 				indata = indata[1:].decode()
-				video = int(indata.split()[1][5:])
-				if video in self.pipelinesexist:
-					videoindex = self.pipelinesexist.index(video)
-					self.pipelines[videoindex].set_state(Gst.State.NULL)
-					self.pipelines_state[videoindex] = False
-					print("quit : video"+str(video))
+				#video = int(indata.split()[1][5:])
+				#if video in self.pipelinesexist:
+				#	videoindex = self.pipelinesexist.index(video)
+				#	self.pipelines[videoindex].set_state(Gst.State.NULL)
+				#	self.pipelines_state[videoindex] = False
+				#	print("quit : video"+str(video))
 			elif self.on_msg:
 				indata = indata[1:].decode()
 				try:
