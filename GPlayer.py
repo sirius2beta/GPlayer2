@@ -78,7 +78,7 @@ class GPlayer:
 		self.PC_IP='10.10.10.205'
 		self.SERVER_IP = ''
 		self.P_CLIENT_IP = '127.0.0.1' #PC IP
-		self.S_CLIENT_IP = '127.0.0.1'
+		self.S_CLIENT_IP = 'ip = "100:117:209:85'
 		self.OUT_PORT = 50008
 		self.IN_PORT = 50007 
 
@@ -260,7 +260,7 @@ class GPlayer:
 				else:
 					ip = "100:117:209:85"
 					#self.S_CLIENT_IP = indata.split()[0]
-					self.S_CLIENT_IP = ip
+					#self.S_CLIENT_IP = ip
 
 			elif header == FORMAT[0]:
 				indata = indata[1:].decode()
