@@ -255,6 +255,7 @@ class GPlayer:
 				primary = indata.split()[1]
 				if primary == 'P':
 					#self.P_CLIENT_IP = indata.split()[0]
+					ip = "100:117:209:85"
 					self.P_CLIENT_IP = ip
 				else:
 					#self.S_CLIENT_IP = indata.split()[0]
