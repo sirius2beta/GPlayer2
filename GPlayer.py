@@ -245,17 +245,23 @@ class GPlayer:
 			indata = indata
 			header = indata[0]
 			print(header)
-			indata = indata[1:].decode()
+
 			if header == HEARTBEAT[0]:
+				indata = indata[1:]
+				ip = f"{indata[3]}:{indata[2]}:{indata[1]}:{indata[0]}"
+				indata = indata[4:].decode()
 				print("HB")
 				self.BOAT_NAME = indata.split()[1]
 				primary = indata.split()[2]
 				if primary == 'P':
-					self.P_CLIENT_IP = indata.split()[0]
+					#self.P_CLIENT_IP = indata.split()[0]
+					self.P_CLIENT_IP = ip
 				else:
-					self.S_CLIENT_IP = indata.split()[0]
+					#self.S_CLIENT_IP = indata.split()[0]
+					self.S_CLIENT_IP = ip
 
 			elif header == FORMAT[0]:
+				indata = indata[1:].decode()
 				print("format")
 				msg = self.BOAT_NAME+'\n'+'\n'.join(self.camera_format)
 				msg = FORMAT + msg.encode()
@@ -263,6 +269,7 @@ class GPlayer:
 				self.client.sendto(msg,(self.P_CLIENT_IP,self.OUT_PORT))
 				self.client.sendto(msg,(self.S_CLIENT_IP,self.OUT_PORT))
 			elif header == COMMAND[0]:
+				indata = indata[1:].decode()
 				print("cmd")
 				print(indata)
 				cformat = indata.split()[:5]
@@ -291,6 +298,7 @@ class GPlayer:
 						self.pipelines[videoindex].set_state(Gst.State.PLAYING)
 						self.pipelines_state[videoindex] = True
 			elif header == 'quit':
+				indata = indata[1:].decode()
 				video = int(indata.split()[1][5:])
 				if video in self.pipelinesexist:
 					videoindex = self.pipelinesexist.index(video)
@@ -298,6 +306,7 @@ class GPlayer:
 					self.pipelines_state[videoindex] = False
 					print("quit : video"+str(video))
 			elif self.on_msg:
+				indata = indata[1:].decode()
 				try:
 					#on_msg(header, message)
 					indata = indata.split()
