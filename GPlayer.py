@@ -259,7 +259,7 @@ class GPlayer:
 					self.P_CLIENT_IP = ip
 				else:
 					#self.S_CLIENT_IP = indata.split()[0]
-					self.S_CLIENT_IP = ip
+					#self.S_CLIENT_IP = ip
 
 			elif header == FORMAT[0]:
 				indata = indata[1:].decode()
