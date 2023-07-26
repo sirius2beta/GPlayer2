@@ -78,7 +78,7 @@ class GPlayer:
 		self.PC_IP='10.10.10.205'
 		self.SERVER_IP = ''
 		self.P_CLIENT_IP = '127.0.0.1' #PC IP
-		self.S_CLIENT_IP = '100:117:209:85'
+		self.S_CLIENT_IP = '127.0.0.1'
 		self.OUT_PORT = 50008
 		self.IN_PORT = 50007 
 
@@ -248,19 +248,17 @@ class GPlayer:
 
 			if header == HEARTBEAT[0]:
 				indata = indata[1:]
-				ip = f"{indata[3]}:{indata[2]}:{indata[1]}:{indata[0]}"
+				ip = f"{indata[3]}.{indata[2]}.{indata[1]}.{indata[0]}"
 				indata = indata[4:].decode()
 				print("HB")
 				self.BOAT_NAME = indata.split()[0]
 				primary = indata.split()[1]
 				if primary == 'P':
-					#self.P_CLIENT_IP = indata.split()[0]
-					ip = "100:117:209:85"
+					self.P_CLIENT_IP = indata.split()[0]
 					self.P_CLIENT_IP = ip
 				else:
-					ip = "100:117:209:85"
-					#self.S_CLIENT_IP = indata.split()[0]
-					#self.S_CLIENT_IP = ip
+					self.S_CLIENT_IP = indata.split()[0]
+					self.S_CLIENT_IP = ip
 
 			elif header == FORMAT[0]:
 				indata = indata[1:].decode()
