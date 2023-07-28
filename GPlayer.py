@@ -162,7 +162,10 @@ class GPlayer:
 			except:
 				print(f"Secondary unreached: {self.S_CLIENT_IP}:{self.OUT_PORT}")
 	def sensorLoop(self):
-		sensorMsg = SENSOR.append(chr(1)).append(chr(1)).append((32).to_bytes(4, 'big'))
+		sensorMsg = SENSOR
+		sensorMsg+=bytes(chr(1),'ascii')
+		sensorMsg+=bytes(chr(1),'ascii')
+		sensorMsg+=(32).to_bytes(4, 'big')
 		while run:
 			if self.thread_terminate is True:
 				break
