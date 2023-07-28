@@ -166,6 +166,7 @@ class GPlayer:
 		
 		run = True
 		while run:
+			value += 1;
 			sensorMsg = SENSOR
 			sensorMsg+=bytes(chr(1),'ascii')
 			sensorMsg+=bytes(chr(1),'ascii')
