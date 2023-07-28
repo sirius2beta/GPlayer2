@@ -166,6 +166,7 @@ class GPlayer:
 		sensorMsg+=bytes(chr(1),'ascii')
 		sensorMsg+=bytes(chr(1),'ascii')
 		sensorMsg+=(32).to_bytes(4, 'big')
+		run = True
 		while run:
 			if self.thread_terminate is True:
 				break
