@@ -74,7 +74,7 @@ def getFormatCMD(sys, cam, format, width, height, framerate, encoder, IP, port):
 
 class GPlayer:
 	def __init__(self):
-		self.BOAT_NAME = 'usv1'
+		self.BOAT_ID = 'usv1'
 		self.GROUND_NAME = 'ground1'
 
 		self.PC_IP='10.10.10.205'
@@ -251,7 +251,7 @@ class GPlayer:
 			if header == HEARTBEAT[0]:
 				indata = indata[1:]
 				ip = f"{indata[3]}.{indata[2]}.{indata[1]}.{indata[0]}"
-				id = indata[4]
+				self.BOAT_ID = indata[4]
 				primary = indata[5:].decode()
 				print(f"id:{id}, primary:{primary}")
 				if primary == 'P':
@@ -264,7 +264,7 @@ class GPlayer:
 			elif header == FORMAT[0]:
 				indata = indata[1:].decode()
 				print("format")
-				msg = self.BOAT_NAME+'\n'+'\n'.join(self.camera_format)
+				msg = self.BOAT_ID+'\n'+'\n'.join(self.camera_format)
 				msg = FORMAT + msg.encode()
 
 				self.client.sendto(msg,(self.P_CLIENT_IP,self.OUT_PORT))
