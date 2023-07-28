@@ -112,9 +112,11 @@ class GPlayer:
 
 		self.thread_cli = threading.Thread(target=self.aliveLoop)
 		self.thread_ser = threading.Thread(target=self.listenLoop)
+		self.thread_sensor = threading.Thread(target=self.sensorLoop)
 
 		self.thread_cli.start()
 		self.thread_ser.start()
+		self.thread_sensor.start()
 		
 	def __del__(self):
 		self.thread_terminate = True
@@ -159,7 +161,16 @@ class GPlayer:
 				print(f"Secondarysend to: {self.S_CLIENT_IP}:{self.OUT_PORT}")
 			except:
 				print(f"Secondary unreached: {self.S_CLIENT_IP}:{self.OUT_PORT}")
-			
+	def sensorLoop(self):
+		sensorMsg = SENSOR.append(chr(1)).append(chr(1)).append((32).to_bytes(4, 'big'))
+		while run:
+			if self.thread_terminate is True:
+				break
+			try:
+				self.client.sendto(sensorMsg,(self.P_CLIENT_IP,self.OUT_PORT))
+				time.sleep(1)
+			except:
+				print(f"Sensor failed")	
 
 	def createPipelines(self):
 		for i in self.camera_format:
