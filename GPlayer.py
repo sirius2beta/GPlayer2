@@ -173,7 +173,7 @@ class GPlayer:
 			sensorMsg += bytes('i', 'ascii')
 			sensorMsg+=bytes(chr(1),'ascii')
 			sensorMsg+=bytes(chr(1),'ascii')
-			sensorMsg+=value.to_bytes(4, 'big')
+			sensorMsg+=value.to_bytes(32, 'big')
 			sensorMsg+=bytes(chr(1),'ascii')
 			
 			
