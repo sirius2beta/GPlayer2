@@ -265,7 +265,7 @@ class GPlayer:
 				indata = indata[1:].decode()
 				print("format")
 				msg = chr(self.BOAT_ID)+"\n".join(self.camera_format)
-				msg = FORMAT + msg.decode()
+				msg = FORMAT + msg
 
 				self.client.sendto(msg,(self.P_CLIENT_IP,self.OUT_PORT))
 				self.client.sendto(msg,(self.S_CLIENT_IP,self.OUT_PORT))
