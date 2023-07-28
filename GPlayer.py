@@ -163,7 +163,7 @@ class GPlayer:
 				print(f"Secondary unreached: {self.S_CLIENT_IP}:{self.OUT_PORT}")
 	def sensorLoop(self):
 		value = 0
-		num_sensor = chr(10)
+		num_sensor = chr(2)
 		
 		run = True
 		while run:
