@@ -264,8 +264,8 @@ class GPlayer:
 			elif header == FORMAT[0]:
 				indata = indata[1:].decode()
 				print("format")
-				msg = self.BOAT_ID.to_bytes(1, byteorder='big')+bytes("\n".join(self.camera_format), 'ascii')
-				msg = FORMAT + msg.encode()
+				msg = char(BOAT_ID)+"\n".join(self.camera_format), 'ascii')
+				msg = FORMAT + msg.decode()
 
 				self.client.sendto(msg,(self.P_CLIENT_IP,self.OUT_PORT))
 				self.client.sendto(msg,(self.S_CLIENT_IP,self.OUT_PORT))
