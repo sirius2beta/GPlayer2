@@ -2,9 +2,11 @@
 class Sensor:
 	def __init__(self):
 		self.name = 'sensor'
-		self.__callback = 0
+		self.__callback = callback
 	def sendMsg(self, Msg):
 		if self.__callback != 0:
 			print("called")
 		else:
 			self.__callback(Msg)
+	def callback():
+		self.a = 1
