@@ -3,5 +3,5 @@ import Sensor
 
 gplayer = GPlayer.GPlayer()
 sensorMaster = Sensor.Sensor()
-sensorMaster.__callback = gplayer.test
+sensorMaster.setCallBack(gplayer.test)
 sensorMaster.sendMsg("hello")
