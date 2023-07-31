@@ -9,5 +9,5 @@ class Sensor:
 			self.__callback(Msg)
 		else:
 			print("called")
-	def callback():
+	def callback(self, Msg):
 		self.a = 1
