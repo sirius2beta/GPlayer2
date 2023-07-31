@@ -4,5 +4,5 @@ class Sensor:
 		self.name = 'sensor'
 		self.__callback = 0
 	def sendMsg(self, Msg):
-		if _callback != 0:
+		if __callback != 0:
 			print("called")
