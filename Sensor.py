@@ -7,4 +7,4 @@ class Sensor:
 		if self.__callback != 0:
 			print("called")
 		else:
-			__callback(Msg)
+			self.__callback(Msg)
