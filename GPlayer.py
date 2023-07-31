@@ -122,7 +122,8 @@ class GPlayer:
 		self.thread_terminate = True
 		self.thread_cli.join()
 		self.thread_ser.join()
-
+	def test(self, msg):
+		print(f"called outside: {msg}")
 	def sendMsg(self, msg):
 		# Send primary heartbeat every 0.5s
 			try:
