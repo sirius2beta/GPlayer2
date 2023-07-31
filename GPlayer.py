@@ -126,6 +126,7 @@ class GPlayer:
 		print(f"called outside: {msg}")
 	def sendMsg(self, msg):
 		# Send primary heartbeat every 0.5s
+			print(f"msg: {msg}")
 			try:
 				self.client.sendto(msg.encode(),(self.P_CLIENT_IP,self.OUT_PORT))
 				
