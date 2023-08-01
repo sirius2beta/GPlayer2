@@ -1,3 +1,5 @@
+import time
+import threading
 SENSOR = b'\x50'
 class SensorManager:
 	def __init__(self):
