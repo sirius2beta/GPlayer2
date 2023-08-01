@@ -2,6 +2,6 @@ import GPlayer
 import Sensor
 
 gplayer = GPlayer.GPlayer()
-sensorMaster = Sensor.Sensor()
-sensorMaster.setCallBack(gplayer.sendMsg)
-sensorMaster.sendMsg("hello")
+sm = SensorManager.Sensor()
+sm.on_message = gplayer.sendMsg
+sm.call("hello")
