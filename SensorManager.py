@@ -6,6 +6,7 @@ class SensorManager:
 	def call(self, Msg):
 		if self._on_message != None:
 			
+			on_message = self.on_message
 			on_message(Msg)
 		else:
 			print("not called")
