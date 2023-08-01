@@ -1,15 +1,17 @@
 
-class Sensor:
+class SensorManager:
 	def __init__(self):
 		self.name = 'sensor'
-		self.__callback = self.callback
-	def sendMsg(self, Msg):
-		if self.__callback != 0:
+		self._on_message = None
+	def call(self, Msg):
+		if self._on_message != None:
 			
-			self.__callback(Msg)
+			on_message(Msg)
 		else:
-			print("called")
-	def setCallBack(self, callback):
-		self.__callback = callback
-	def callback(self, Msg):
-		self.a = 1
+			print("not called")
+	@property
+	def on_message(self):
+		return self._on_message
+	@on_message.setter
+	def on_message(self, func):
+		self._on_message = func
