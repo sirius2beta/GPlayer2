@@ -13,7 +13,7 @@ class SensorManager:
 		self.thread_terminate = True
 		self.thread_sensor.join()
 	def sensorLoop(self):
-		while thread_terminate == False:
+		while self.thread_terminate == False:
 			value = 0
 			num_sensor = chr(1)
 	
