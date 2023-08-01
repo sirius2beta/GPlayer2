@@ -13,9 +13,10 @@ class SensorManager:
 		self.thread_terminate = True
 		self.thread_sensor.join()
 	def sensorLoop(self):
+		value = 0
+		num_sensor = chr(1)
 		while self.thread_terminate == False:
-			value = 0
-			num_sensor = chr(1)
+			
 	
 			value += 1;
 			sensorMsg = SENSOR
