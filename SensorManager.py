@@ -8,7 +8,7 @@ class SensorManager:
 		self._sensorList = [[1,'i']]
 		self.thread_terminate = False
 		self.thread_sensor = threading.Thread(target=self.sensorLoop)
-		#self.thread_sensor.start()
+		self.thread_sensor.start()
 	def __del__(self):
 		self.thread_terminate = True
 		self.thread_sensor.join()
