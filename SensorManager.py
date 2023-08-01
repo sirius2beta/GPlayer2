@@ -16,6 +16,7 @@ class SensorManager:
 			print("not called")
 	def setSensor(self, slist):
 		self._sensorList = slist
+		print(f'setsensor: sensor:{slist[0][0]}, {slist[0][1]}')
 	@property
 	def sensorList(self):
 		return self.sensorList
