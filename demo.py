@@ -1,5 +1,5 @@
 import GPlayer
-import Sensor
+import SensorManager
 
 gplayer = GPlayer.GPlayer()
 sm = SensorManager.Sensor()
