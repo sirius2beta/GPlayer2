@@ -14,6 +14,8 @@ class SensorManager:
 				
 		else:
 			print("not called")
+	def setSensor(self, slist):
+		self._sensorList = slist
 	@property
 	def sensorList(self):
 		return self.sensorList
