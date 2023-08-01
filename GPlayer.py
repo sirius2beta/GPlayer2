@@ -90,7 +90,7 @@ class GPlayer:
 		self.camera_format = []
 		self.get_video_format()
 		
-		self._on_msg = None
+		self._on_setsensor = None
 		
 		GObject.threads_init()
 		Gst.init(None)
@@ -327,6 +327,11 @@ class GPlayer:
 						self.pipelines[videoindex] = Gst.parse_launch(gstring)
 						self.pipelines[videoindex].set_state(Gst.State.PLAYING)
 						self.pipelines_state[videoindex] = True
+			elif header == SENSOR[0]:
+				sensorList = [[1,'i']]
+				if this.on_setsensor != None:
+					on_setsensor = self.on_setsensor
+					on_setsensor(sensorList)
 			elif header == QUIT[0]:
 				indata = indata[1:].decode()
 				#video = int(indata.split()[1][5:])
@@ -335,32 +340,23 @@ class GPlayer:
 				#	self.pipelines[videoindex].set_state(Gst.State.NULL)
 				#	self.pipelines_state[videoindex] = False
 				#	print("quit : video"+str(video))
-			elif self.on_msg:
-				indata = indata[1:].decode()
-				try:
-					#on_msg(header, message)
-					indata = indata.split()
-					indata.pop(0)
-					indata = " ".join(indata)
-					self.on_msg(header, indata)
-					print('on msg')
-				except Exception as err:
-					print(f'error on_msg callback function: {err}')
+			
+				
 
 
 	@property
-	def on_msg(self):
-		return self._on_msg
+	def on_setsensor(self):
+		return self._on_setsensor
 	
-	@on_msg.setter
-	def on_msg(self, func):
-		self._on_msg = func
+	@on_setsensor.setter
+	def on_setsensor(self, func):
+		self._on_setsensor = func
 	
-	def on_msg_callback(self):
-		def decorator(func):
-			self.on_msg = func
-			return func
-		return decorator
+	#def on_msg_callback(self):
+	#	def decorator(func):
+	#		self._on_setsensor = func
+	#		return func
+	#	return decorator
 			
 
 # The callback for when a PUBLISH message is received from the server.
