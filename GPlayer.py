@@ -332,6 +332,8 @@ class GPlayer:
 				if this.on_setsensor != None:
 					on_setsensor = self.on_setsensor
 					on_setsensor(sensorList)
+				else:
+					print("no setsensor callback")
 			elif header == QUIT[0]:
 				indata = indata[1:].decode()
 				#video = int(indata.split()[1][5:])
