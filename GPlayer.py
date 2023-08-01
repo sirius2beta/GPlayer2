@@ -329,7 +329,7 @@ class GPlayer:
 						self.pipelines_state[videoindex] = True
 			elif header == SENSOR[0]:
 				sensorList = [[1,'i']]
-				if this.on_setsensor != None:
+				if self.on_setsensor != None:
 					on_setsensor = self.on_setsensor
 					on_setsensor(sensorList)
 				else:
