@@ -11,8 +11,14 @@ class SensorManager:
 		self.thread_sensor = threading.Thread(target=self.sensorLoop)
 		self.thread_sensor.start()
 		cmd = "ls /dev/tty*"
-		returncode = returned_value = subprocess.check_output(cmd,shell=True).decode("utf-8") 
-		print(returncode)
+		returncode = returned_value = subprocess.check_output(cmd,shell=True).decode("utf-8")
+		devlist = returncode.split()
+		for i in devlist:
+			if i.find("ttyS"):
+				print(i)
+			elif i.find("ttyAMA"):
+				print(i)
+		
 	def __del__(self):
 		self.thread_terminate = True
 		self.thread_sensor.join()
