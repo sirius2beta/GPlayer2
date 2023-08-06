@@ -11,6 +11,14 @@ class SensorManager:
 		self.thread_terminate = False
 		self.thread_sensor = threading.Thread(target=self.sensorLoop)
 		self.thread_sensor.start()
+		cmd = "lsusb"
+		returncode = returned_value = subprocess.check_output(cmd,shell=True).decode("utf-8")
+		codelist = returncode.split()
+		usblist = []
+		for i in codelist:
+			if len(i) > 6:
+				if i.split()[6] == "Arduino":
+				print(i)
 		cmd = "ls /dev/tty*"
 		returncode = returned_value = subprocess.check_output(cmd,shell=True).decode("utf-8")
 		codelist = returncode.split()
