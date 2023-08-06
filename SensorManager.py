@@ -18,7 +18,7 @@ class SensorManager:
 		for i in codelist:
 			if len(i) > 6:
 				if i.split()[6] == "Arduino":
-				print(i)
+					print(i)
 		cmd = "ls /dev/tty*"
 		returncode = returned_value = subprocess.check_output(cmd,shell=True).decode("utf-8")
 		codelist = returncode.split()
