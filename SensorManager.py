@@ -1,5 +1,6 @@
 import time
 import threading
+import subprocess
 SENSOR = b'\x50'
 class SensorManager:
 	def __init__(self):
@@ -9,6 +10,9 @@ class SensorManager:
 		self.thread_terminate = False
 		self.thread_sensor = threading.Thread(target=self.sensorLoop)
 		self.thread_sensor.start()
+		cmd = "ls /dev/tty*"
+		returncode = subprocess.run(cmd.split(), capture_output = True, encoding = 'utf-8')
+		print(returncode)
 	def __del__(self):
 		self.thread_terminate = True
 		self.thread_sensor.join()
