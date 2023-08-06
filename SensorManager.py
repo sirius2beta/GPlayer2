@@ -42,12 +42,13 @@ class SensorManager:
 			
 			if self.thread_terminate is True:
 				break
-			try:
-				on_message = self.on_message
-				on_message(sensorMsg)
-				time.sleep(1)
-			except:
-				print(f"Sensor failed")	
+			if self._on_message != None:
+				try:
+					on_message = self.on_message
+					on_message(sensorMsg)
+					time.sleep(1)
+				except:
+					print(f"Sensor failed")	
 	def call(self, Msg):
 		if self._on_message != None:
 			on_message = self.on_message
