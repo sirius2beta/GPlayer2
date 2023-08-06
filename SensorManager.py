@@ -16,10 +16,12 @@ class SensorManager:
 		codelist = returncode.split('\n')
 		usblist = []
 		for i in codelist:
-			print(i)
+
 			if len(i.split()) > 6:
 				if i.split()[6] == "Arduino":
-					print(i)
+					bus = i.split()[1]
+					id = i.split()[3][:3]
+					print(f"{bus}:{id}")
 		cmd = "ls /dev/tty*"
 		returncode = returned_value = subprocess.check_output(cmd,shell=True).decode("utf-8")
 		codelist = returncode.split()
