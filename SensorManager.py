@@ -13,13 +13,17 @@ class SensorManager:
 		self.thread_sensor.start()
 		cmd = "ls /dev/tty*"
 		returncode = returned_value = subprocess.check_output(cmd,shell=True).decode("utf-8")
-		devlist = returncode.split()
-		for i in devlist:
+		codelist = returncode.split()
+		devlist = map()
+		for i in codelist:
 			if i.find("ttyS") != -1:
+				devlist[i] = []
 				print(i)
 				ser = serial.Serial(i, 9600, timeout=2)
 				if ser.read() == b"":
 					print(f"---------{i} is not opened")
+			elif i.find("ttyACM") != -1:
+				print(i)
 			elif i.find("ttyAMA") != -1:
 				print(i)
 		
