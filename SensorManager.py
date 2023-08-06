@@ -14,9 +14,9 @@ class SensorManager:
 		returncode = returned_value = subprocess.check_output(cmd,shell=True).decode("utf-8")
 		devlist = returncode.split()
 		for i in devlist:
-			if i.find("ttyS"):
+			if i.find("ttyS") != -1:
 				print(i)
-			elif i.find("ttyAMA"):
+			elif i.find("ttyAMA") != -1:
 				print(i)
 		
 	def __del__(self):
