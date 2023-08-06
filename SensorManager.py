@@ -18,7 +18,7 @@ class SensorManager:
 			if i.find("ttyS") != -1:
 				print(i)
 				ser = serial.Serial(i, 9600, timeout=0)
-				if ser.read() == "":
+				if ser.read() == b"":
 					print(f"{i} is not opened")
 			elif i.find("ttyAMA") != -1:
 				print(i)
