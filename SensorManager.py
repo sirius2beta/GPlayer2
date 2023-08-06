@@ -16,6 +16,7 @@ class SensorManager:
 		codelist = returncode.split()
 		usblist = []
 		for i in codelist:
+			print(i)
 			if len(i.split()) > 6:
 				if i.split()[6] == "Arduino":
 					print(i)
