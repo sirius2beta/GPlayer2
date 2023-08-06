@@ -1,6 +1,7 @@
 import time
 import threading
 import subprocess
+import serial
 SENSOR = b'\x50'
 class SensorManager:
 	def __init__(self):
@@ -16,6 +17,9 @@ class SensorManager:
 		for i in devlist:
 			if i.find("ttyS") != -1:
 				print(i)
+				ser = serial.Serial(i, 9600, timeout=0)
+				if ser.is_open():
+					print(f"{i} is opened")
 			elif i.find("ttyAMA") != -1:
 				print(i)
 		
