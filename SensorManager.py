@@ -14,7 +14,7 @@ class SensorManager:
 		cmd = "ls /dev/tty*"
 		returncode = returned_value = subprocess.check_output(cmd,shell=True).decode("utf-8")
 		codelist = returncode.split()
-		devlist = map()
+		devlist = dict()
 		for i in codelist:
 			if i.find("ttyS") != -1:
 				devlist[i] = []
