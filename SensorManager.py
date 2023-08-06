@@ -22,6 +22,10 @@ class SensorManager:
 					bus = i.split()[1]
 					id = i.split()[3][:3]
 					print(f"{bus}:{id}")
+					port = "/dev/bus/usb/"+bus+"/"+id
+					ser = serial.Serial(port, 9600, timeout=2)
+					if ser.read() == b"":
+					print(f"---------{bus} is not opened")
 		cmd = "ls /dev/tty*"
 		returncode = returned_value = subprocess.check_output(cmd,shell=True).decode("utf-8")
 		codelist = returncode.split()
