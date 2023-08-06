@@ -13,7 +13,7 @@ class SensorManager:
 		self.thread_sensor.start()
 		cmd = "lsusb"
 		returncode = returned_value = subprocess.check_output(cmd,shell=True).decode("utf-8")
-		codelist = returncode.split()
+		codelist = returncode.split('\n')
 		usblist = []
 		for i in codelist:
 			print(i)
