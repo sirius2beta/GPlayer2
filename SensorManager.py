@@ -16,7 +16,7 @@ class SensorManager:
 		codelist = returncode.split()
 		usblist = []
 		for i in codelist:
-			if len(i.split) > 6:
+			if len(i.split()) > 6:
 				if i.split()[6] == "Arduino":
 					print(i)
 		cmd = "ls /dev/tty*"
