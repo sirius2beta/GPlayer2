@@ -11,7 +11,7 @@ class SensorManager:
 		self.thread_sensor = threading.Thread(target=self.sensorLoop)
 		self.thread_sensor.start()
 		cmd = "ls /dev/tty*"
-		returncode = subprocess.run(cmd.split(), capture_output = True, encoding = 'utf-8')
+		returncode = returned_value = subprocess.check_output(cmd,shell=True).decode("utf-8") 
 		print(returncode)
 	def __del__(self):
 		self.thread_terminate = True
