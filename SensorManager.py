@@ -35,7 +35,7 @@ class SensorManager:
 			print(dlist)
 			for j in dlist:
 				word = j.split("==")
-				if word[0] == "ATTRS{idProduct}":
+				if word[0].find("ATTRS{idProduct}") != -1:
 					idProduct = word[1]
 					print(f"idproduct: {idProduct}")
 					
