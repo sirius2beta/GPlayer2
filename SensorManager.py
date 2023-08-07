@@ -23,7 +23,7 @@ class SensorManager:
 					idVendor = wd[2]
 					print(f"idVendor: {wd[2]}")
 				elif wd[0] == "SYMLINK+":
-					SYMLINK = wd[2]
+					SYMLINK = wd[1]
 					print(f"SYMLINK: {wd[1]}")
 					exist_dev_list.append([kernals, idProduct, idVendor, SYMLINK])
 					
