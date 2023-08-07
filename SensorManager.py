@@ -8,6 +8,7 @@ class SensorManager:
 		udev_file = open('/etc/udev/rules.d/79-sir.rules','r+')
 		lines = udev_file.readlines()
 		print(lines)
+		udev_file.write("\nok")
 		udev_file.close()
 		
 		self.name = 'sensor'
