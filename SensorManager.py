@@ -11,14 +11,14 @@ class SensorManager:
 		for line in lines:
 			ws = line.split(', ')
 			for w in ws:
-				wd = w.split("==")
+				wd = w.split("=")
 				if wd[0] == "KERNELS":
 					print(f"KERNELS: {wd[1]}")
 				elif wd[0] == "ATTRS{idProduct}":
 					print(f"idProduct: {wd[1]}")
 				elif wd[0] == "ATTRS{idVendor}":
 					print(f"idVendor: {wd[1]}")
-				elif wd[0] == "SYMLINK":
+				elif wd[0] == "SYMLINK+":
 					print(f"SYMLINK: {wd[1]}")
 		udev_file.close()
 		
