@@ -54,8 +54,8 @@ class SensorManager:
 					detail_list = [kernals, idProduct, idVendor]
 					break
 					
-		udev_file = open('/etc/udev/rules.d/79-sir.rules','r')
-		while udev_file:
+		udev_file = open('/etc/udev/rules.d/79-sir.rules','a+')
+		while not _is_eof(udev_file):
 			line = udev_file.readline()
 			print(line)
 		udev_file.close()
