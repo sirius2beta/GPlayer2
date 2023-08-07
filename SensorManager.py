@@ -32,7 +32,7 @@ class SensorManager:
 			cmd = f"udevadm info -a -p  $(udevadm info -q path -n {i})"
 			returncode = subprocess.check_output(cmd,shell=True).decode("utf-8")
 			dlist = returncode.split('\n')
-			print(i)
+			print(dlist)
 			for j in dlist:
 				word = j.split("==")
 				if word[0] == "ATTRS{idProduct}":
