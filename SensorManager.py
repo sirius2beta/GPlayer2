@@ -12,9 +12,9 @@ class SensorManager:
 			ws = line.split(', ')
 			for w in ws:
 				if w[0] == "KERNELS":
-					print(f"KERNELS: {w[1]")
+					print(f"KERNELS: {w[1]}")
 				elif w[1] == "ATTRS{idProduct}":
-					print(f"idProduct: {w[1]")
+					print(f"idProduct: {w[1]}")
 		udev_file.write("\nok")
 		udev_file.close()
 		
