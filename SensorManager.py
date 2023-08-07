@@ -54,7 +54,7 @@ class SensorManager:
 					detail_list = [kernals, idProduct, idVendor]
 					break
 					
-		udev_file = open('/etc/udev/rules.d/79-sir.rules','a+-')
+		udev_file = open('/etc/udev/rules.d/79-sir.rules','a+')
 		while udev_file:
 			line = udev_file.readline()
 			print(line)
