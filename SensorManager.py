@@ -11,6 +11,7 @@ class SensorManager:
 		for line in lines:
 			ws = line.split(', ')
 			for w in ws:
+				print(w)
 				if w[0] == "KERNELS":
 					print(f"KERNELS: {w[1]}")
 				elif w[1] == "ATTRS{idProduct}":
