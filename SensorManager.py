@@ -11,36 +11,35 @@ class SensorManager:
 		self.thread_terminate = False
 		self.thread_sensor = threading.Thread(target=self.sensorLoop)
 		self.thread_sensor.start()
-		cmd = "lsusb"
-		returncode = returned_value = subprocess.check_output(cmd,shell=True).decode("utf-8")
-		codelist = returncode.split('\n')
-		usblist = []
-		for i in codelist:
-
-			if len(i.split()) > 6:
-				if i.split()[6] == "Arduino":
-					bus = i.split()[1]
-					id = i.split()[3][:3]
-					print(f"{bus}:{id}")
-					port = "/dev/bus/usb/"+bus+"/"+id
-					ser = serial.Serial(port, 9600, timeout=2)
-					if ser.read() == b"":
-						print(f"---------{bus} is not opened")
+		# get all tty* device (ACM, USB..)
 		cmd = "ls /dev/tty*"
-		returncode = returned_value = subprocess.check_output(cmd,shell=True).decode("utf-8")
+		returncode = subprocess.check_output(cmd,shell=True).decode("utf-8")
 		codelist = returncode.split()
-		devlist = dict()
+		devlist = []
 		for i in codelist:
 			if i.find("ttyS") != -1:
-				devlist[i] = []
+				devlist.append[i]
 				print(i)
-				ser = serial.Serial(i, 9600, timeout=2)
-				if ser.read() == b"":
-					print(f"---------{i} is not opened")
 			elif i.find("ttyACM") != -1:
 				print(i)
 			elif i.find("ttyAMA") != -1:
 				print(i)
+		# find device detail
+		detail_list = []
+		idProduct = ''
+		for i in devlist:
+			cmd = f"udevadm info -a -p  $(udevadm info -q path -n {i})"
+			returncode = subprocess.check_output(cmd,shell=True).decode("utf-8")
+			dlist = returncode.split('\n')
+			for j in dlist:
+				word = j.split("==")
+				if word[0] == "ATTRS{idProduct}":
+					idProduct = word[1]
+					print(f"idproduct: {idProduct}")
+					
+			
+		
+		
 		
 	def __del__(self):
 		self.thread_terminate = True
