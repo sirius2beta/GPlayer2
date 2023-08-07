@@ -5,7 +5,7 @@ import serial
 SENSOR = b'\x50'
 class SensorManager:
 	def __init__(self):
-		udev_file = open('/etc/udev/rules.d/79-sir.rules','a+')
+		udev_file = open('/etc/udev/rules.d/79-sir.rules','r')
 		lines = udev_file.readlines()
 		print(lines)
 		udev_file.close()
