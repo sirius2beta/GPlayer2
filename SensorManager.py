@@ -17,7 +17,7 @@ class SensorManager:
 		codelist = returncode.split()
 		devlist = []
 		for i in codelist:
-			print(i)
+			
 			if i.find("ttyS") != -1:
 				devlist.append(i)
 				print(i)
@@ -32,6 +32,7 @@ class SensorManager:
 			cmd = f"udevadm info -a -p  $(udevadm info -q path -n {i})"
 			returncode = subprocess.check_output(cmd,shell=True).decode("utf-8")
 			dlist = returncode.split('\n')
+			print(i)
 			for j in dlist:
 				word = j.split("==")
 				if word[0] == "ATTRS{idProduct}":
