@@ -55,9 +55,8 @@ class SensorManager:
 					break
 					
 		udev_file = open('/etc/udev/rules.d/79-sir.rules','a+')
-		while not _is_eof(udev_file):
-			line = udev_file.readline()
-			print(line)
+		lines = udev_file.readlines()
+		print(lines)
 		udev_file.close()
 		
 		
