@@ -18,10 +18,10 @@ class SensorManager:
 		devlist = []
 		for i in codelist:
 			
-			if i.find("ttyS") != -1:
-				devlist.append(i)
-				print(i)
-			elif i.find("ttyACM") != -1:
+			#if i.find("ttyS") != -1:
+			#	devlist.append(i)
+			#	print(i)
+			if i.find("ttyACM") != -1:
 				devlist.append(i)
 				print(i)
 			elif i.find("ttyAMA") != -1:
@@ -54,7 +54,11 @@ class SensorManager:
 					detail_list = [kernals, idProduct, idVendor]
 					break
 					
-			
+		udev_file = open('/etc/udev/rules.d/79-sir.rules','a+-')
+		while udev_file:
+			line = udev_file.readline()
+			print(line)
+		udev_file.close()
 		
 		
 		
