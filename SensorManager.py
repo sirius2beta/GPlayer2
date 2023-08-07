@@ -22,8 +22,10 @@ class SensorManager:
 				devlist.append(i)
 				print(i)
 			elif i.find("ttyACM") != -1:
+				devlist.append(i)
 				print(i)
 			elif i.find("ttyAMA") != -1:
+				devlist.append(i)
 				print(i)
 		# find device detail
 		detail_list = []
@@ -35,7 +37,7 @@ class SensorManager:
 			print(f"this is {i}")
 			for j in dlist:
 				word = j.split("==")
-				print(f"------: {word[0]}")
+				#print(f"------: {word[0]}")
 				if word[0].find("idProduct") != -1:
 					idProduct = word[1]
 					print(f"idproduct: {idProduct}")
