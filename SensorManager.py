@@ -41,16 +41,17 @@ class SensorManager:
 				#print(f"------: {word[0]}")
 				if word[0].find("KERNELS") != -1:
 					kernals = word[1]
-					print(f"KERNELS: {kernals}")
+					print(f"KERNELS: {kernals}.")
 				elif word[0].find("idProduct") != -1:
 					idProduct = word[1]
-					print(f"idproduct: {idProduct}")
+					print(f"idproduct: {idProduct}.")
 					count += 1
 				elif word[0].find("idVendor") != -1:
 					idVendor = word[1]
-					print(f"idVendor: {idVendor}")
+					print(f"idVendor: {idVendor}.")
 					count += 1
 				if count == 2:
+					detail_list = [kernals, idProduct, idVendor]
 					break
 					
 			
