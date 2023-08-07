@@ -8,6 +8,13 @@ class SensorManager:
 		udev_file = open('/etc/udev/rules.d/79-sir.rules','r+')
 		lines = udev_file.readlines()
 		print(lines)
+		for line in lines:
+			ws = line.split(', ')
+			for w in ws:
+				if w[0] == "KERNELS":
+					print(f"KERNELS: {w[1]")
+				elif w[1] == "ATTRS{idProduct}":
+					print(f"idProduct: {w[1]")
 		udev_file.write("\nok")
 		udev_file.close()
 		
