@@ -71,7 +71,7 @@ class SensorManager:
 					print(f"idVendor: {idVendor}.")
 					count += 1
 				elif word[0].find("manufacturer") != -1:
-					manufacturer = word[1]
+					manufacturer = word[1][1:-1]
 					print(f"manufacturer: {manufacturer}.")
 					count += 1
 				if count == 3:
