@@ -70,8 +70,12 @@ class SensorManager:
 					idVendor = word[1]
 					print(f"idVendor: {idVendor}.")
 					count += 1
-				if count == 2:
-					detail_list = [kernals, idProduct, idVendor]
+				elif word[0].find("manufacturer") != -1:
+					manufacturer = word[1]
+					print(f"manufacturer: {manufacturer}.")
+					count += 1
+				if count == 3:
+					detail_list = [kernals, idProduct, idVendor, manufacturer]
 					break
 					
 		
