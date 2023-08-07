@@ -41,6 +41,9 @@ class SensorManager:
 			if i.find("ttyACM") != -1:
 				devlist.append(i)
 				print(i)
+			elif i.find("ttyUSB") != -1:
+				devlist.append(i)
+				print(i)
 			elif i.find("ttyAMA") != -1:
 				devlist.append(i)
 				print(i)
