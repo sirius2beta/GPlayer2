@@ -8,18 +8,25 @@ class SensorManager:
 		udev_file = open('/etc/udev/rules.d/79-sir.rules','r+')
 		lines = udev_file.readlines()
 		print(lines)
+		exist_dev_list
 		for line in lines:
 			ws = line.split(', ')
 			for w in ws:
 				wd = w.split("=")
 				if wd[0] == "KERNELS":
+					kernals = wd[2]
 					print(f"KERNELS: {wd[2]}")
 				elif wd[0] == "ATTRS{idProduct}":
+					idProduct = wd[2]
 					print(f"idProduct: {wd[2]}")
 				elif wd[0] == "ATTRS{idVendor}":
+					idVendor = wd[2]
 					print(f"idVendor: {wd[2]}")
 				elif wd[0] == "SYMLINK+":
+					SYMLINK = wd[2]
 					print(f"SYMLINK: {wd[1]}")
+					exist_dev_list.append([kernals, idProduct, idVendor, SYMLINK])
+					
 		udev_file.close()
 		
 		self.name = 'sensor'
@@ -71,12 +78,17 @@ class SensorManager:
 					print(f"idVendor: {idVendor}.")
 					count += 1
 				elif word[0].find("manufacturer") != -1:
-					manufacturer = word[1][1:-1]
+					manufacturer = word[1][1:-1].split()[0] # only take first word for identification
 					print(f"manufacturer: {manufacturer}.")
 					count += 1
 				if count == 3:
-					detail_list = [kernals, idProduct, idVendor, manufacturer]
+					detail_list.append([kernals, idProduct, idVendor, manufacturer])
 					break
+		# compare exist and added device
+		for i in detail_list:
+			for j in exist_dev_list:
+				if (i[0] == j[0]) AND (i[1] == j[1]) AND (i[2] == j[2]):
+					print("device exist")
 					
 		
 		
