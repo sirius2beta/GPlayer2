@@ -17,6 +17,7 @@ class SensorManager:
 		codelist = returncode.split()
 		devlist = []
 		for i in codelist:
+			print(i)
 			if i.find("ttyS") != -1:
 				devlist.append(i)
 				print(i)
