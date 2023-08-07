@@ -14,7 +14,7 @@ class SensorManager:
 				print(w)
 				if w[0] == "KERNELS":
 					print(f"KERNELS: {w[1]}")
-				elif w[1] == "ATTRS{idProduct}":
+				elif w[0] == "ATTRS{idProduct}":
 					print(f"idProduct: {w[1]}")
 		udev_file.write("\nok")
 		udev_file.close()
