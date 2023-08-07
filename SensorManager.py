@@ -8,7 +8,7 @@ class SensorManager:
 		udev_file = open('/etc/udev/rules.d/79-sir.rules','r+')
 		lines = udev_file.readlines()
 		print(lines)
-		exist_dev_list
+		exist_dev_list = []
 		for line in lines:
 			ws = line.split(', ')
 			for w in ws:
