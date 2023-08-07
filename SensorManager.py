@@ -35,12 +35,23 @@ class SensorManager:
 			returncode = subprocess.check_output(cmd,shell=True).decode("utf-8")
 			dlist = returncode.split('\n')
 			print(f"this is {i}")
+			count = 0
 			for j in dlist:
 				word = j.split("==")
 				#print(f"------: {word[0]}")
-				if word[0].find("idProduct") != -1:
+				if word[0].find("KERNELS") != -1:
+					kernals = word[1]
+					print(f"KERNELS: {kernals}")
+				elif word[0].find("idProduct") != -1:
 					idProduct = word[1]
 					print(f"idproduct: {idProduct}")
+					count += 1
+				elif word[0].find("idVendor") != -1:
+					idProduct = word[1]
+					print(f"idVendor: {idVendor}")
+					count += 1
+				if count == 2:
+					break
 					
 			
 		
