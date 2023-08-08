@@ -69,7 +69,7 @@ class SensorManager:
 			for wb in wa:
 				wc = wb.split("=")
 				if wc[0] == "KERNELS":
-					kernals = c[2]
+					kernals = wc[2]
 				elif wc[0] == "ATTRS{idProduct}":
 					idProduct = wc[2]
 				elif wc[0] == "ATTRS{idVendor}":
