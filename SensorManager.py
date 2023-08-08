@@ -85,7 +85,7 @@ class SensorManager:
 		for i in current_dev_list:
 			for j in registered_dev_list:
 				if (i[1] == j[1]) and (i[2] == j[2]):
-					i[4] = "/dev/"+j[3]
+					i[4] = "/dev/"+j[3][1:-1]
 					print("device exist")
 					
 		print(f"Current device:")
