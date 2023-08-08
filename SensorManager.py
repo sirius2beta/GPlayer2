@@ -85,7 +85,7 @@ class SensorManager:
 		# compare exist and added device
 		for i in current_dev_list:
 			for j in registered_dev_list:
-				if (i[0] == j[0]) and (i[1] == j[1]) and (i[2] == j[2]):
+				if ((i[1] == j[1]) and (i[2] == j[2]):
 					print("device exist")
 					
 		
