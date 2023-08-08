@@ -56,9 +56,7 @@ class SensorManager:
 				if count == 3:
 					current_dev_list.append([kernals, idProduct, idVendor, manufacturer, i])
 					break
-		print(f"Current device:")
-		for i in current_dev_list:
-			print(f"K:{i[0]}, P:{i[1]}, V:{i[2]}, M:{i[3]}, D:{i[4]}")
+
 		udev_file = open('/etc/udev/rules.d/79-sir.rules','r+')
 		lines = udev_file.readlines()
 		registered_dev_list = []
@@ -80,13 +78,19 @@ class SensorManager:
 		print(f"Registered device:")
 		for i in registered_dev_list:
 			print(f"K:{i[0]}, P:{i[1]}, V:{i[2]}, M:{i[3]}")
+		
 					
 		udev_file.close()
 		# compare exist and added device
 		for i in current_dev_list:
 			for j in registered_dev_list:
 				if (i[1] == j[1]) and (i[2] == j[2]):
+					i[4] = "/dev/"+j[3]
 					print("device exist")
+					
+		print(f"Current device:")
+		for i in current_dev_list:
+			print(f"K:{i[0]}, P:{i[1]}, V:{i[2]}, M:{i[3]}, D:{i[4]}")
 					
 		
 		
