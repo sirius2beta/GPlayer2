@@ -5,29 +5,7 @@ import serial
 SENSOR = b'\x50'
 class SensorManager:
 	def __init__(self):
-		udev_file = open('/etc/udev/rules.d/79-sir.rules','r+')
-		lines = udev_file.readlines()
-		print(lines)
-		exist_dev_list = []
-		for line in lines:
-			ws = line.split(', ')
-			for w in ws:
-				wd = w.split("=")
-				if wd[0] == "KERNELS":
-					kernals = wd[2]
-					print(f"KERNELS: {wd[2]}")
-				elif wd[0] == "ATTRS{idProduct}":
-					idProduct = wd[2]
-					print(f"idProduct: {wd[2]}")
-				elif wd[0] == "ATTRS{idVendor}":
-					idVendor = wd[2]
-					print(f"idVendor: {wd[2]}")
-				elif wd[0] == "SYMLINK+":
-					SYMLINK = wd[1]
-					print(f"SYMLINK: {wd[1]}")
-					exist_dev_list.append([kernals, idProduct, idVendor, SYMLINK])
-					
-		udev_file.close()
+		
 		
 		self.name = 'sensor'
 		self._on_message = None
@@ -35,6 +13,7 @@ class SensorManager:
 		self.thread_terminate = False
 		self.thread_sensor = threading.Thread(target=self.sensorLoop)
 		self.thread_sensor.start()
+		
 		# get all tty* device (ACM, USB..)
 		cmd = "ls /dev/tty*"
 		returncode = subprocess.check_output(cmd,shell=True).decode("utf-8")
@@ -47,15 +26,12 @@ class SensorManager:
 			#	print(i)
 			if i.find("ttyACM") != -1:
 				devlist.append(i)
-				print(i)
 			elif i.find("ttyUSB") != -1:
 				devlist.append(i)
-				print(i)
 			elif i.find("ttyAMA") != -1:
 				devlist.append(i)
-				print(i)
 		# find device detail
-		detail_list = []
+		current_dev_list = []
 		idProduct = ''
 		for i in devlist:
 			cmd = f"udevadm info -a -p  $(udevadm info -q path -n {i})"
@@ -68,25 +44,47 @@ class SensorManager:
 				#print(f"------: {word[0]}")
 				if word[0].find("KERNELS") != -1:
 					kernals = word[1]
-					print(f"KERNELS: {kernals}.")
 				elif word[0].find("idProduct") != -1:
 					idProduct = word[1]
-					print(f"idproduct: {idProduct}.")
 					count += 1
 				elif word[0].find("idVendor") != -1:
 					idVendor = word[1]
-					print(f"idVendor: {idVendor}.")
 					count += 1
 				elif word[0].find("manufacturer") != -1:
 					manufacturer = word[1][1:-1].split()[0] # only take first word for identification
-					print(f"manufacturer: {manufacturer}.")
 					count += 1
 				if count == 3:
-					detail_list.append([kernals, idProduct, idVendor, manufacturer])
+					current_dev_list.append([kernals, idProduct, idVendor, manufacturer])
 					break
+		print(f"Current device:")
+		for i in current_dev_list:
+			print(f"K:{i[0]}, P:{i[1]}, V:{i[2]}, M:{i[3]}")
+		udev_file = open('/etc/udev/rules.d/79-sir.rules','r+')
+		lines = udev_file.readlines()
+		registered_dev_list = []
+		
+		# generate exist dev list
+		for line in lines:
+			wa = line.split(', ')
+			for wb in wa:
+				wc = wb.split("=")
+				if wc[0] == "KERNELS":
+					kernals = c[2]
+				elif wc[0] == "ATTRS{idProduct}":
+					idProduct = wc[2]
+				elif wc[0] == "ATTRS{idVendor}":
+					idVendor = wc[2]
+				elif wc[0] == "SYMLINK+":
+					SYMLINK = wc[1]
+					registered_dev_list.append([kernals, idProduct, idVendor, SYMLINK])
+		print(f"Registered device:")
+		for i in registered_dev_list:
+			print(f"K:{i[0]}, P:{i[1]}, V:{i[2]}, M:{i[3]}")
+					
+		udev_file.close()
 		# compare exist and added device
-		for i in detail_list:
-			for j in exist_dev_list:
+		for i in current_dev_list:
+			for j in registered_dev_list:
 				if (i[0] == j[0]) and (i[1] == j[1]) and (i[2] == j[2]):
 					print("device exist")
 					
