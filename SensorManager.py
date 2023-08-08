@@ -54,11 +54,11 @@ class SensorManager:
 					manufacturer = word[1][1:-1].split()[0] # only take first word for identification
 					count += 1
 				if count == 3:
-					current_dev_list.append([kernals, idProduct, idVendor, manufacturer])
+					current_dev_list.append([kernals, idProduct, idVendor, manufacturer, i])
 					break
 		print(f"Current device:")
 		for i in current_dev_list:
-			print(f"K:{i[0]}, P:{i[1]}, V:{i[2]}, M:{i[3]}")
+			print(f"K:{i[0]}, P:{i[1]}, V:{i[2]}, M:{i[3]}, D:{i[4]}")
 		udev_file = open('/etc/udev/rules.d/79-sir.rules','r+')
 		lines = udev_file.readlines()
 		registered_dev_list = []
