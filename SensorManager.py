@@ -97,6 +97,7 @@ class SensorManager:
 						if n in num_exist:
 							n+=1
 						else:
+							num_exist.append(n)
 							break
 					udev_file.write(f"ATTRS{{idProduct}}=={i[0]}, ATTRS{{idVendor}}=={i[1]}, SYMLINK+=\"PD{n}\", MODE=\"0777\"\n")
 		udev_file.close()
