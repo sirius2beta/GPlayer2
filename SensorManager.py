@@ -81,7 +81,7 @@ class SensorManager:
 			
 		print(f"Registered device:")
 		for i in registered_dev_list:
-			print(f"K:{i[0]}, P:{i[1]}, V:{i[2]}, M:{i[3]}")
+			print(f"P:{i[0]}, V:{i[1]}, M:{i[2]}")
 		
 					
 		
@@ -102,7 +102,7 @@ class SensorManager:
 		udev_file.close()
 		print(f"Current device:")
 		for i in current_dev_list:
-			print(f"K:{i[0]}, P:{i[1]}, V:{i[2]}, M:{i[3]}, D:{i[4]}")
+			print(f"P:{i[0]}, V:{i[1]}, M:{i[2]}, D:{i[3]}")
 					
 		
 		
