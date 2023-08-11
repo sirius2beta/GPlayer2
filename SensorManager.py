@@ -92,7 +92,13 @@ class SensorManager:
 					i[4] = "/dev/"+j[3][1:-1]
 					print("device exist")
 				else:
-					udev_file.write(f"ATTRS\{idProduct\}=={i[1]}, ATTRS\{idVendor\}=={i[2]}, SYMLINK+="{}", MODE="0777"")
+					n = 0
+					while True:
+						if n in num_exist:
+							n+=1
+						else:
+							break
+					udev_file.write(f"ATTRS\{idProduct\}=={i[1]}, ATTRS\{idVendor\}=={i[2]}, SYMLINK+="PD{n}", MODE="0777"")
 		udev_file.close()
 		print(f"Current device:")
 		for i in current_dev_list:
