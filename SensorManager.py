@@ -74,7 +74,7 @@ class SensorManager:
 					idVendor = wc[2]
 				elif wc[0] == "SYMLINK+":
 					SYMLINK = wc[1][1:-1]
-					num = int(SYMLINK[2,-1])
+					num = int(SYMLINK[2:-1])
 					print(f"num: {num}")
 					num_exist.append(num)
 					registered_dev_list.append([idProduct, idVendor, SYMLINK])
