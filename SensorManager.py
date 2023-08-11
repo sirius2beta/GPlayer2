@@ -60,8 +60,8 @@ class SensorManager:
 		lines = udev_file.readlines()
 		registered_dev_list = []
 		
-		# generate exist dev list
-		num_exist = []
+		# generate registerd dev list
+		id_exist = [] # specific number for PD that exist, e.g PD0, PD1, PD5...
 		for line in lines:
 			wa = line.split(', ')
 			for wb in wa:
@@ -74,16 +74,14 @@ class SensorManager:
 					idVendor = wc[2]
 				elif wc[0] == "SYMLINK+":
 					SYMLINK = wc[1][1:-1]
-					num = int(SYMLINK[2:])
-					print(f"num: {num}")
-					num_exist.append(num)
-					registered_dev_list.append([idProduct, idVendor, SYMLINK])
+					id = int(SYMLINK[2:])
+					id_exist.append(id)
+					registered_dev_list.append([idProduct, idVendor, SYMLINK, id])
 			
 		print(f"Registered device:")
 		for i in registered_dev_list:
 			print(f"P:{i[0]}, V:{i[1]}, M:{i[2]}")
-		
-					
+	
 		
 		# compare exist and added device
 		for i in current_dev_list:
@@ -91,21 +89,23 @@ class SensorManager:
 			for j in registered_dev_list:
 				if (i[0] == j[0]) and (i[1] == j[1]):
 					i[3] = "/dev/"+j[2]
+					i.append(j[3])
 					print("device exist")
 					add = False
 			if add:	
 				n = 0
 				while True:
-					if n in num_exist:
+					if n in id_exist:
 						n+=1
 					else:
-						num_exist.append(n)
+						id_exist.append(n)
 						break
 				udev_file.write(f"ATTRS{{idProduct}}=={i[0]}, ATTRS{{idVendor}}=={i[1]}, SYMLINK+=\"PD{n}\", MODE=\"0777\"\n")
+				i.append(n)
 		udev_file.close()
 		print(f"Current device:")
 		for i in current_dev_list:
-			print(f"P:{i[0]}, V:{i[1]}, M:{i[2]}, D:{i[3]}")
+			print(f"P:{i[0]}, V:{i[1]}, M:{i[2]}, D:{i[3]}, ID:{i[4]}")
 					
 		
 		
