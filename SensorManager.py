@@ -87,19 +87,21 @@ class SensorManager:
 		
 		# compare exist and added device
 		for i in current_dev_list:
+			add = True
 			for j in registered_dev_list:
 				if (i[0] == j[0]) and (i[1] == j[1]):
 					i[3] = "/dev/"+j[2]
 					print("device exist")
-				else:
-					n = 0
-					while True:
-						if n in num_exist:
-							n+=1
-						else:
-							num_exist.append(n)
-							break
-					udev_file.write(f"ATTRS{{idProduct}}=={i[0]}, ATTRS{{idVendor}}=={i[1]}, SYMLINK+=\"PD{n}\", MODE=\"0777\"\n")
+					add = False
+			if add:	
+				n = 0
+				while True:
+					if n in num_exist:
+						n+=1
+					else:
+						num_exist.append(n)
+						break
+				udev_file.write(f"ATTRS{{idProduct}}=={i[0]}, ATTRS{{idVendor}}=={i[1]}, SYMLINK+=\"PD{n}\", MODE=\"0777\"\n")
 		udev_file.close()
 		print(f"Current device:")
 		for i in current_dev_list:
