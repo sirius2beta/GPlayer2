@@ -41,7 +41,7 @@ class SensorManager:
 			for j in dlist:
 				word = j.split("==")
 				#print(f"------: {word[0]}")
-				if word[0].find("KERNELS") != -1:
+				if word[0].find("KERNELS") != -1: # not used
 					kernals = word[1]
 				elif word[0].find("idProduct") != -1:
 					idProduct = word[1]
@@ -53,7 +53,7 @@ class SensorManager:
 					manufacturer = word[1][1:-1].split()[0] # only take first word for identification
 					count += 1
 				if count == 3:
-					current_dev_list.append([kernals, idProduct, idVendor, manufacturer, i])
+					current_dev_list.append([idProduct, idVendor, manufacturer, i])
 					break
 
 		udev_file = open('/etc/udev/rules.d/79-sir.rules','r+')
@@ -61,32 +61,39 @@ class SensorManager:
 		registered_dev_list = []
 		
 		# generate exist dev list
+		num_exist = []
 		for line in lines:
 			wa = line.split(', ')
 			for wb in wa:
 				wc = wb.split("=")
-				if wc[0] == "KERNELS":
+				if wc[0] == "KERNELS": # Not used
 					kernals = wc[2]
 				elif wc[0] == "ATTRS{idProduct}":
 					idProduct = wc[2]
 				elif wc[0] == "ATTRS{idVendor}":
 					idVendor = wc[2]
 				elif wc[0] == "SYMLINK+":
-					SYMLINK = wc[1]
-					registered_dev_list.append([kernals, idProduct, idVendor, SYMLINK])
+					SYMLINK = wc[1][1:-1]
+					num = int(SYMLINK[2,-1])
+					print(f"num: {num}")
+					num_exist.append(num)
+					registered_dev_list.append([idProduct, idVendor, SYMLINK])
+			
 		print(f"Registered device:")
 		for i in registered_dev_list:
 			print(f"K:{i[0]}, P:{i[1]}, V:{i[2]}, M:{i[3]}")
 		
 					
-		udev_file.close()
+		
 		# compare exist and added device
 		for i in current_dev_list:
 			for j in registered_dev_list:
 				if (i[1] == j[1]) and (i[2] == j[2]):
 					i[4] = "/dev/"+j[3][1:-1]
 					print("device exist")
-					
+				else:
+					udev_file.write(f"ATTRS\{idProduct\}=={i[1]}, ATTRS\{idVendor\}=={i[2]}, SYMLINK+="{}", MODE="0777"")
+		udev_file.close()
 		print(f"Current device:")
 		for i in current_dev_list:
 			print(f"K:{i[0]}, P:{i[1]}, V:{i[2]}, M:{i[3]}, D:{i[4]}")
