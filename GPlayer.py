@@ -239,6 +239,7 @@ class GPlayer:
 
 	
 	def listenLoop(self):
+		time.sleep(5)
 		print('server started...')
 		run = True
 		while run:
