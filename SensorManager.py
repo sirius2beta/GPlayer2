@@ -4,6 +4,8 @@ import subprocess
 import serial
 SENSOR = b'\x50'
 class SensorManager:
+	def on_dev_info(self):
+		print("send dev info")
 	def __init__(self):
 		
 		
@@ -114,8 +116,7 @@ class SensorManager:
 	def __del__(self):
 		self.thread_terminate = True
 		self.thread_sensor.join()
-	def on_dev_info(self):
-		print("send dev info")
+	
 	def sensorLoop(self):
 		value = 0
 		num_sensor = chr(1)
