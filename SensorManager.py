@@ -118,7 +118,7 @@ class SensorManager:
 		self.thread_sensor.join()
 	def on_dev_info(self):
 		print("send dev info")
-		sensorMsg = ""
+		sensorMsg = b""
 		sensorMsg += bytes('r', 'ascii')
 		Msg=""
 		for i in self.current_dev_list:
