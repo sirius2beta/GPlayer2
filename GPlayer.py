@@ -105,9 +105,6 @@ class GPlayer:
 		self.client = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 		self.server.bind((self.SERVER_IP, self.IN_PORT))
 		self.server.setblocking(0)
-
-		print(f'server started at {self.IN_PORT}')
-		print(f'send message to {self.P_CLIENT_IP}, Port: {self.IN_PORT}')
 		
 		self.thread_terminate = False
 		self.lock = threading.Lock()
@@ -239,7 +236,6 @@ class GPlayer:
 
 	
 	def listenLoop(self):
-		time.sleep(5)
 		print('server started...')
 		run = True
 		while run:
