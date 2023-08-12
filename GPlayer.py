@@ -316,12 +316,13 @@ class GPlayer:
 						get_dev_info = self.get_dev_info
 						get_dev_info()
 					else:
+						print("no get_dev_info callback")
 				if indata[1] == 'm':
 					if self.on_setsensor != None:
 						on_setsensor = self.on_setsensor
 						on_setsensor(sensorList)
 					else:
-						print("no setsensor callback")
+						
 			elif header == QUIT[0]:
 				print("QUIT---")
 				indata = indata[1:].decode()
