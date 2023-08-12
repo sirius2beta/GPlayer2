@@ -271,7 +271,7 @@ class GPlayer:
 				self.newConnection = True
 				if self.get_dev_info != None:
 					get_dev_info = self.get_dev_info
-					get_dev_info(sensorList)
+					get_dev_info()
 				else:
 					print("get dev info failed")
 
