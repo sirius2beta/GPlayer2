@@ -125,8 +125,9 @@ class GPlayer:
 		print(f"called outside: {msg}")
 	def sendMsg(self, topic, msg):
 		# Send primary heartbeat every 0.5s
-		print(f"msg: {msg}")
+		
 		msg = topic + self.BOAT_ID.to_bytes(4, 'big') + msg
+		print(f"msg: {msg}")
 		try:
 			self.client.sendto(msg,(self.P_CLIENT_IP,self.OUT_PORT))
 
