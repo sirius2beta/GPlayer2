@@ -322,7 +322,7 @@ class GPlayer:
 						on_setsensor = self.on_setsensor
 						on_setsensor(sensorList)
 					else:
-						
+						print("no on_setsensor callback")
 			elif header == QUIT[0]:
 				print("QUIT---")
 				indata = indata[1:].decode()
