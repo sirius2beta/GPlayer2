@@ -128,23 +128,17 @@ class GPlayer:
 		print(f"called outside: {msg}")
 	def sendMsg(self, msg):
 		# Send primary heartbeat every 0.5s
-			print(f"msg: {msg}")
-			try:
-				self.client.sendto(msg,(self.P_CLIENT_IP,self.OUT_PORT))
+		#print(f"msg: {msg}")
+		try:
+			self.client.sendto(msg,(self.P_CLIENT_IP,self.OUT_PORT))
 
-				if self.newConnection:
-					print(f"Primary send to: {self.P_CLIENT_IP}:{self.OUT_PORT}")
-			except:
-				if self.newConnection:
-					print(f"Primary unreached: {self.P_CLIENT_IP}:{self.OUT_PORT}")
-			# Send secondary heartbeat every 0.5s
-			try:
-				self.client.sendto(msg,(self.S_CLIENT_IP, self.OUT_PORT))
-				if self.newConnection:
-					print(f"Secondarysend to: {self.S_CLIENT_IP}:{self.OUT_PORT}")
-			except:
-				if self.newConnection:
-					print(f"Secondary unreached: {self.S_CLIENT_IP}:{self.OUT_PORT}")
+		except:
+			print(f"Primary unreached: {self.P_CLIENT_IP}:{self.OUT_PORT}")
+		# Send secondary heartbeat every 0.5s
+		try:
+			self.client.sendto(msg,(self.S_CLIENT_IP, self.OUT_PORT))
+		except:
+			print(f"Secondary unreached: {self.S_CLIENT_IP}:{self.OUT_PORT}")
 	
 	def aliveLoop(self):
 		print('client started...')
