@@ -269,12 +269,11 @@ class GPlayer:
 					self.S_CLIENT_IP = indata.split()[0]
 					self.S_CLIENT_IP = ip
 				self.newConnection = True
-				if self._get_dev_info != None:
-					try:
-						get_dev_info = self.get_dev_info
-						get_dev_info(sensorMsg)
-					except:
-						print(f"get dev info failed")	
+				if self.get_dev_info != None:
+					get_dev_info = self.get_dev_info
+					get_dev_info(sensorList)
+				else:
+					print("get dev info failed")
 
 			elif header == FORMAT[0]:
 				indata = indata[1:].decode()
