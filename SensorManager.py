@@ -31,7 +31,7 @@ class SensorManager:
 			elif i.find("ttyAMA") != -1:
 				devlist.append(i)
 		# find device detail
-		current_dev_list = []
+		self.current_dev_list = []
 		idProduct = ''
 		for i in devlist:
 			cmd = f"udevadm info -a -p  $(udevadm info -q path -n {i})"
@@ -53,12 +53,12 @@ class SensorManager:
 					manufacturer = word[1][1:-1].split()[0] # only take first word for identification
 					count += 1
 				if count == 3:
-					current_dev_list.append([idProduct, idVendor, manufacturer, i])
+					self.current_dev_list.append([idProduct, idVendor, manufacturer, i])
 					break
 
 		udev_file = open('/etc/udev/rules.d/79-sir.rules','r+')
 		lines = udev_file.readlines()
-		registered_dev_list = []
+		self.registered_dev_list = []
 		
 		# generate registerd dev list
 		id_exist = [] # specific number for PD that exist, e.g PD0, PD1, PD5...
@@ -76,17 +76,17 @@ class SensorManager:
 					SYMLINK = wc[1][1:-1]
 					id = int(SYMLINK[2:])
 					id_exist.append(id)
-					registered_dev_list.append([idProduct, idVendor, SYMLINK, id])
+					self.registered_dev_list.append([idProduct, idVendor, SYMLINK, id])
 			
 		print(f"Registered device:")
-		for i in registered_dev_list:
+		for i in self.registered_dev_list:
 			print(f"P:{i[0]}, V:{i[1]}, M:{i[2]}")
 	
 		
 		# compare exist and added device
-		for i in current_dev_list:
+		for i in self.current_dev_list:
 			add = True
-			for j in registered_dev_list:
+			for j in self.registered_dev_list:
 				if (i[0] == j[0]) and (i[1] == j[1]):
 					i[3] = "/dev/"+j[2]
 					i.append(j[3])
@@ -104,7 +104,7 @@ class SensorManager:
 				i.append(n)
 		udev_file.close()
 		print(f"Current device:")
-		for i in current_dev_list:
+		for i in self.current_dev_list:
 			print(f"P:{i[0]}, V:{i[1]}, M:{i[2]}, D:{i[3]}, ID:{i[4]}")
 					
 		
@@ -114,6 +114,8 @@ class SensorManager:
 	def __del__(self):
 		self.thread_terminate = True
 		self.thread_sensor.join()
+	def on_dev_info(self):
+		print("send dev info")
 	def sensorLoop(self):
 		value = 0
 		num_sensor = chr(1)
