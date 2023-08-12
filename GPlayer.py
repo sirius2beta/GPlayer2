@@ -92,6 +92,7 @@ class GPlayer:
 		self.get_video_format()
 		
 		self._on_setsensor = None
+		self._get_dev_info = None
 		
 		GObject.threads_init()
 		Gst.init(None)
@@ -122,6 +123,7 @@ class GPlayer:
 		self.thread_terminate = True
 		self.thread_cli.join()
 		self.thread_ser.join()
+		
 	def test(self, msg):
 		print(f"called outside: {msg}")
 	def sendMsg(self, msg):
@@ -273,6 +275,12 @@ class GPlayer:
 					self.S_CLIENT_IP = indata.split()[0]
 					self.S_CLIENT_IP = ip
 				self.newConnection = True
+				if self._get_dev_info != None:
+					try:
+						get_dev_info = self.get_dev_info
+						get_dev_info(sensorMsg)
+					except:
+						print(f"get dev info failed")	
 
 			elif header == FORMAT[0]:
 				indata = indata[1:].decode()
@@ -337,6 +345,14 @@ class GPlayer:
 	@on_setsensor.setter
 	def on_setsensor(self, func):
 		self._on_setsensor = func
+
+	@property
+	def get_dev_info(self):
+		return self._get_dev_info
+
+	@get_dev_info.setter
+	def get_dev_info(self, func):
+		self._get_dev_info = func
 	
 	#def on_msg_callback(self):
 	#	def decorator(func):
