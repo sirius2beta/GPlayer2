@@ -141,16 +141,7 @@ class SensorManager:
 					time.sleep(1)
 				except:
 					print(f"Sensor failed")	
-	def call(self, Msg):
-		if self._on_message != None:
-			on_message = self.on_message
-			
-			for sensor in self._sensorList:
-				Msg = str(sensor[0])+" : "+sensor[1]
-				on_message(Msg)
-				
-		else:
-			print("not called")
+	
 	def setSensor(self, slist):
 		self._sensorList = slist
 		for sensor in self._sensorList:
