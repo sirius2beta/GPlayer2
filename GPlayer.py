@@ -74,7 +74,7 @@ def getFormatCMD(sys, cam, format, width, height, framerate, encoder, IP, port):
 
 class GPlayer:
 	def __init__(self):
-		self.BOAT_ID = 'usv1'
+		self.BOAT_ID = 0
 		self.GROUND_NAME = 'ground1'
 
 		self.PC_IP='10.10.10.205'
@@ -126,6 +126,7 @@ class GPlayer:
 	def sendMsg(self, msg):
 		# Send primary heartbeat every 0.5s
 		#print(f"msg: {msg}")
+		msg = self.BOAT_ID.to_bytes(4, 'big')+msg
 		try:
 			self.client.sendto(msg,(self.P_CLIENT_IP,self.OUT_PORT))
 
