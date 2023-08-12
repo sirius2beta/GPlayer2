@@ -278,11 +278,7 @@ class GPlayer:
 				self.client.sendto(msg,(self.P_CLIENT_IP,self.OUT_PORT))
 				self.client.sendto(msg,(self.S_CLIENT_IP,self.OUT_PORT))
 
-				if self.get_dev_info != None:
-					get_dev_info = self.get_dev_info
-					get_dev_info()
-				else:
-					print("get dev info failed")
+				
 			elif header == COMMAND[0]:
 				indata = indata[1:].decode()
 				print("COMMAND---")
@@ -315,11 +311,17 @@ class GPlayer:
 			elif header == SENSOR[0]:
 				print("SENSOR---")
 				sensorList = [[1,'i']]
-				if self.on_setsensor != None:
-					on_setsensor = self.on_setsensor
-					on_setsensor(sensorList)
-				else:
-					print("no setsensor callback")
+				if indata[1] == 'd':
+					if self.get_dev_info != None:
+						get_dev_info = self.get_dev_info
+						get_dev_info()
+					else:
+				if indata[1] == 'm':
+					if self.on_setsensor != None:
+						on_setsensor = self.on_setsensor
+						on_setsensor(sensorList)
+					else:
+						print("no setsensor callback")
 			elif header == QUIT[0]:
 				print("QUIT---")
 				indata = indata[1:].decode()
