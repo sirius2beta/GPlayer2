@@ -126,7 +126,7 @@ class GPlayer:
 	def sendMsg(self, topic, msg):
 		# Send primary heartbeat every 0.5s
 		
-		msg = topic + self.BOAT_ID.to_bytes(4, 'big') + msg
+		msg = topic + chr(self.BOAT_ID) + msg
 		print(f"topic:{msg[0]}\nmsg: {msg}")
 		try:
 			self.client.sendto(msg,(self.P_CLIENT_IP,self.OUT_PORT))
