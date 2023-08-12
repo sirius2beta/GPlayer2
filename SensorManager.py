@@ -118,7 +118,6 @@ class SensorManager:
 		self.thread_sensor.join()
 	def on_dev_info(self):
 		print("send dev info")
-		sensorMsg = SENSOR
 		sensorMsg += bytes('r', 'ascii')
 		Msg=""
 		for i in self.current_dev_list:
@@ -130,7 +129,7 @@ class SensorManager:
 		if self._on_message != None:
 			try:
 				on_message = self.on_message
-				on_message(sensorMsg)
+				on_message(SENSOR, sensorMsg)
 			except:
 				print(f"Sensor failed")	
 	def sensorLoop(self):
