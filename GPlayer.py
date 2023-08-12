@@ -267,11 +267,7 @@ class GPlayer:
 					self.S_CLIENT_IP = indata.split()[0]
 					self.S_CLIENT_IP = ip
 				self.newConnection = True
-				if self.get_dev_info != None:
-					get_dev_info = self.get_dev_info
-					get_dev_info()
-				else:
-					print("get dev info failed")
+				
 
 			elif header == FORMAT[0]:
 				indata = indata[1:].decode()
@@ -281,6 +277,12 @@ class GPlayer:
 
 				self.client.sendto(msg,(self.P_CLIENT_IP,self.OUT_PORT))
 				self.client.sendto(msg,(self.S_CLIENT_IP,self.OUT_PORT))
+
+				if self.get_dev_info != None:
+					get_dev_info = self.get_dev_info
+					get_dev_info()
+				else:
+					print("get dev info failed")
 			elif header == COMMAND[0]:
 				indata = indata[1:].decode()
 				print("COMMAND---")
