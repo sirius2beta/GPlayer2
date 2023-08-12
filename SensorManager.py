@@ -121,7 +121,7 @@ class SensorManager:
 		sensorMsg = SENSOR
 		sensorMsg += bytes('r', 'ascii')
 		for i in self.current_dev_list:
-			",".join(i)
+			",".join(map(str,i))
 		Msg = ("\n").join(self.current_dev_list)
 		print(Msg)
 
