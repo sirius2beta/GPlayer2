@@ -6,6 +6,20 @@ SENSOR = b'\x50'
 class SensorManager:
 	def on_dev_info(self):
 		print("send dev info")
+		sensorMsg = SENSOR
+		sensorMsg += bytes('r', 'ascii')
+		for i in current_dev_list:
+			i.join(",")
+		Msg = current_dev_list.join("\n")
+		print(Msg)
+
+		if self._on_message != None:
+			try:
+				on_message = self.on_message
+				#on_message(sensorMsg)
+			except:
+				print(f"Sensor failed")	
+		
 	def __init__(self):
 		
 		
