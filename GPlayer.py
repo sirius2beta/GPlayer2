@@ -171,7 +171,7 @@ class GPlayer:
 			except:
 				if self.newConnection:
 					print(f"Secondary unreached: {self.S_CLIENT_IP}:{self.OUT_PORT}")
-			if self.newConnection = False
+			self.newConnection = False
 
 	def createPipelines(self):
 		for i in self.camera_format:
