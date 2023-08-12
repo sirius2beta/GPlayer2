@@ -311,6 +311,7 @@ class GPlayer:
 			elif header == SENSOR[0]:
 				print("SENSOR---")
 				sensorList = [[1,'i']]
+				print(indata[1])
 				if indata[1] == 'd':
 					if self.get_dev_info != None:
 						get_dev_info = self.get_dev_info
