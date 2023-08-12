@@ -156,7 +156,7 @@ class SensorManager:
 			if self._on_message != None:
 				try:
 					on_message = self.on_message
-					on_message(sensorMsg)
+					on_message(SENSOR, sensorMsg)
 					time.sleep(1)
 				except:
 					print(f"Sensor failed")	
