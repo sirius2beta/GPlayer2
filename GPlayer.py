@@ -123,10 +123,10 @@ class GPlayer:
 		self.thread_ser.start()
 	def test(self, msg):
 		print(f"called outside: {msg}")
-	def sendMsg(self, msg):
+	def sendMsg(self, topic, msg):
 		# Send primary heartbeat every 0.5s
 		#print(f"msg: {msg}")
-		msg = self.BOAT_ID.to_bytes(4, 'big')+msg
+		msg = topic + self.BOAT_ID.to_bytes(4, 'big') + msg
 		try:
 			self.client.sendto(msg,(self.P_CLIENT_IP,self.OUT_PORT))
 
