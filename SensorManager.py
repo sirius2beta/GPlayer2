@@ -120,9 +120,9 @@ class SensorManager:
 		print("send dev info")
 		sensorMsg = SENSOR
 		sensorMsg += bytes('r', 'ascii')
-		for i in current_dev_list:
+		for i in self.current_dev_list:
 			i.join(",")
-		Msg = current_dev_list.join("\n")
+		Msg = self.current_dev_list.join("\n")
 		print(Msg)
 
 		if self._on_message != None:
