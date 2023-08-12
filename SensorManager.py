@@ -125,7 +125,7 @@ class SensorManager:
 			",".join(map(str,i))
 			Msg+= ",".join(map(str,i))+"\n"
 		sensorMsg += bytes(Msg, 'ascii')
-		print(Msg)
+		print(sensorMsg)
 
 		if self._on_message != None:
 			try:
