@@ -147,8 +147,8 @@ class SensorManager:
 	
 	def setSensor(self, slist):
 		self._sensorList = slist
-		for sensor in self._sensorList:
-			print(f'setsensor: sensor:{sensor[0]}, {sensor[1]}')
+		#for sensor in self._sensorList:
+		#	print(f'setsensor: sensor:{sensor[0]}, {sensor[1]}')
 	@property
 	def sensorList(self):
 		return self.sensorList
