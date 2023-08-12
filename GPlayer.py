@@ -111,19 +111,19 @@ class GPlayer:
 		
 		self.thread_terminate = False
 		self.lock = threading.Lock()
-
-		self.thread_cli = threading.Thread(target=self.aliveLoop)
-		self.thread_ser = threading.Thread(target=self.listenLoop)
 		
-
-		self.thread_cli.start()
-		self.thread_ser.start()
+		
 		
 	def __del__(self):
 		self.thread_terminate = True
 		self.thread_cli.join()
 		self.thread_ser.join()
-		
+	def startLoop(self):
+		self.thread_cli = threading.Thread(target=self.aliveLoop)
+		self.thread_ser = threading.Thread(target=self.listenLoop)
+
+		self.thread_cli.start()
+		self.thread_ser.start()
 	def test(self, msg):
 		print(f"called outside: {msg}")
 	def sendMsg(self, msg):
