@@ -254,7 +254,6 @@ class GPlayer:
 			
 			indata = indata
 			header = indata[0]
-			print(header)
 
 			if header == HEARTBEAT[0]:
 				indata = indata[1:]
@@ -277,7 +276,7 @@ class GPlayer:
 
 			elif header == FORMAT[0]:
 				indata = indata[1:].decode()
-				print("format")
+				print("FORMAT---")
 				msg = chr(self.BOAT_ID)+"\n".join(self.camera_format)
 				msg = FORMAT + msg.encode()
 
@@ -285,7 +284,7 @@ class GPlayer:
 				self.client.sendto(msg,(self.S_CLIENT_IP,self.OUT_PORT))
 			elif header == COMMAND[0]:
 				indata = indata[1:].decode()
-				print("cmd")
+				print("COMMAND---")
 				print(indata)
 				cformat = indata.split()[:5]
 
@@ -313,6 +312,7 @@ class GPlayer:
 						self.pipelines[videoindex].set_state(Gst.State.PLAYING)
 						self.pipelines_state[videoindex] = True
 			elif header == SENSOR[0]:
+				print("SENSOR---")
 				sensorList = [[1,'i']]
 				if self.on_setsensor != None:
 					on_setsensor = self.on_setsensor
@@ -320,6 +320,7 @@ class GPlayer:
 				else:
 					print("no setsensor callback")
 			elif header == QUIT[0]:
+				print("QUIT---")
 				indata = indata[1:].decode()
 				#video = int(indata.split()[1][5:])
 				#if video in self.pipelinesexist:
@@ -327,9 +328,6 @@ class GPlayer:
 				#	self.pipelines[videoindex].set_state(Gst.State.NULL)
 				#	self.pipelines_state[videoindex] = False
 				#	print("quit : video"+str(video))
-			
-				
-
 
 	@property
 	def on_setsensor(self):
