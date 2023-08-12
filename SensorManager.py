@@ -52,7 +52,7 @@ class SensorManager:
 					idVendor = word[1]
 					count += 1
 				elif word[0].find("manufacturer") != -1:
-					manufacturer = word[1][1:-1].split()[0] # only take first word for identification
+					manufacturer = word[1][1:-1] # only take first word for identification
 					count += 1
 				if count == 3:
 					self.current_dev_list.append([idProduct, idVendor, manufacturer, i])
