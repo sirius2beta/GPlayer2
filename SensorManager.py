@@ -124,6 +124,7 @@ class SensorManager:
 		for i in self.current_dev_list:
 			",".join(map(str,i))
 			Msg+= ",".join(map(str,i))+"\n"
+		sensorMsg += bytes(Msg, 'ascii')
 		print(Msg)
 
 		if self._on_message != None:
