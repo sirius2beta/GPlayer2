@@ -259,7 +259,7 @@ class GPlayer:
 				ip = f"{indata[3]}.{indata[2]}.{indata[1]}.{indata[0]}"
 				self.BOAT_ID = indata[4]
 				primary = indata[5:].decode()
-				print(f"id:{id}, primary:{primary}")
+				print(f"id:{self.BOAT_ID}, primary:{primary}")
 				if primary == 'P':
 					self.P_CLIENT_IP = indata.split()[0]
 					self.P_CLIENT_IP = ip
