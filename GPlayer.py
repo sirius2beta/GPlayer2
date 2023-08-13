@@ -147,7 +147,7 @@ class GPlayer:
 			if self.thread_terminate is True:
 				break
 			#beat = b'\x10' + self.BOAT_NAME.encode()
-			beat = b'\x10'
+			beat = b'\x10'+char(self.BOAT_ID).encode()
 			# Send primary heartbeat every 0.5s
 			try:
 				self.client.sendto(beat,(self.P_CLIENT_IP,self.OUT_PORT))
