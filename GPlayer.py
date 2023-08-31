@@ -161,19 +161,19 @@ class GPlayer:
 				self.client.sendto(beat,(self.P_CLIENT_IP,self.OUT_PORT))
 				time.sleep(0.5)
 				if self.newConnection:
-					print(f"Primary send to: {self.P_CLIENT_IP}:{self.OUT_PORT}")
+					print(f"\n=== New connection ===\n -Primary send to: {self.P_CLIENT_IP}:{self.OUT_PORT}\n")
 			except:
 				if self.newConnection:
-					print(f"Primary unreached: {self.P_CLIENT_IP}:{self.OUT_PORT}")
+					print(f"\n=== New connection ===\n -Primary unreached: {self.P_CLIENT_IP}:{self.OUT_PORT}\n")
 			# Send secondary heartbeat every 0.5s
 			try:
 				self.client.sendto(beat,(self.S_CLIENT_IP, self.OUT_PORT))
 				time.sleep(0.5)
 				if self.newConnection:
-					print(f"Secondarysend to: {self.S_CLIENT_IP}:{self.OUT_PORT}")
+					print(f"\n=== New connection ===\n -Secondarysend to: {self.S_CLIENT_IP}:{self.OUT_PORT}\n")
 			except:
 				if self.newConnection:
-					print(f"Secondary unreached: {self.S_CLIENT_IP}:{self.OUT_PORT}")
+					print(f"\n=== New connection ===\n -Secondary unreached: {self.S_CLIENT_IP}:{self.OUT_PORT}\n")
 			self.newConnection = False
 
 	def createPipelines(self):
