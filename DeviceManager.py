@@ -117,7 +117,6 @@ class DeviceManager:
 		self.thread_terminate = True
 		self.thread_sensor.join()
 	def on_dev_info(self):
-		print("send dev info")
 		sensorMsg = b""
 		sensorMsg += bytes('r', 'ascii')
 		Msg=""
