@@ -328,7 +328,7 @@ class GPlayer:
 						metaList = indata[2:].split(',')
 						pinList = metaList[0].split()
 						for j in pinList:
-							print(f'Device Pin:{pinList[j]}')
+							print(f'Device Pin:{j}')
 						print(f'type:{metaList[1]}')
 						print(f'settings:{metaList[2]}')
 					if self.on_setsensor != None:
