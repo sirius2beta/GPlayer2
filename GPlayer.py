@@ -91,7 +91,7 @@ class GPlayer:
 		self.camera_format = []
 		self.get_video_format()
 		
-		self._on_setsensor = None
+		self._on_setDevice = None
 		self._get_dev_info = None
 		
 		GObject.threads_init()
@@ -328,14 +328,14 @@ class GPlayer:
 						metaList = indata[1:].split(',')
 						pinList = metaList[0].split()
 						for j in pinList:
-							print(f'Device Pin:{j}')
-						print(f'type:{metaList[1]}')
-						print(f'settings:{metaList[2]}')
-					if self.on_setsensor != None:
-						on_setsensor = self.on_setsensor
-						#on_setsensor(sensorList)
+							print(f' -Device Pin:{j}')
+						print(f' -type:{metaList[1]}')
+						print(f' -settings:{metaList[2]}')
+					if self.on_setDevice != None:
+						on_setDevice = self.on_setDevice
+						#on_setDevice(sensorList)
 					else:
-						print("no on_setsensor callback")
+						print("no on_setDevice callback")
 			elif header == QUIT[0]:
 				print("QUIT---")
 				indata = indata[1:].decode()
@@ -347,12 +347,12 @@ class GPlayer:
 				#	print("quit : video"+str(video))
 
 	@property
-	def on_setsensor(self):
-		return self._on_setsensor
+	def on_setDevice(self):
+		return self._on_setDevice
 	
-	@on_setsensor.setter
-	def on_setsensor(self, func):
-		self._on_setsensor = func
+	@on_setDevice.setter
+	def on_setDevice(self, func):
+		self._on_setDevice = func
 
 	@property
 	def get_dev_info(self):
@@ -364,7 +364,7 @@ class GPlayer:
 	
 	#def on_msg_callback(self):
 	#	def decorator(func):
-	#		self._on_setsensor = func
+	#		self._on_setDevice = func
 	#		return func
 	#	return decorator
 			
