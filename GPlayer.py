@@ -14,6 +14,9 @@ SENSOR = b'\x50'
 
 gi.require_version("Gst", "1.0")
 from gi.repository import Gst, GLib, GObject
+
+class _Device
+
 # update
 def getFormatCMD(sys, cam, format, width, height, framerate, encoder, IP, port):
 		gstring = 'v4l2src device=/dev/'+cam
@@ -323,13 +326,16 @@ class GPlayer:
 					indata = indata[1:]
 					print("Dev mapping:")
 					deviceList = indata.split("\n")
+					Device = _Device()
 					for i in deviceList:
 						operation = indata[0]
 						metaList = indata[1:].split(',')
 						pinList = metaList[0].split()
 						for j in pinList:
 							print(f' -Device Pin:{j}')
-						print(f' -type:{metaList[1]}')
+						Device.type = metaList[1]
+						print(f' -type:{Device.type}')
+						
 						print(f' -settings:{metaList[2]}')
 					if self.on_setDevice != None:
 						on_setDevice = self.on_setDevice
