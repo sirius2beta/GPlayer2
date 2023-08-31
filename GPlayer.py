@@ -340,6 +340,7 @@ class GPlayer:
 						
 						newDev.type = metaList[2]
 						newDev.settings = metaList[3]
+						print(f' -ID:{newDev.ID}')
 						for j in newDev.pinIDList:
 							print(f' -Device Pin:{j}')
 						print(f' -type:{newDev.type}')
