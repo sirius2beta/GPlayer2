@@ -15,7 +15,12 @@ SENSOR = b'\x50'
 gi.require_version("Gst", "1.0")
 from gi.repository import Gst, GLib, GObject
 
-class _Device
+class _Device:
+	ID = 0
+	deviceName = ""
+	type = 0
+	setting = ""
+	pinIDList = []
 
 # update
 def getFormatCMD(sys, cam, format, width, height, framerate, encoder, IP, port):
