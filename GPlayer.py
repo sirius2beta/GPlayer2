@@ -311,17 +311,17 @@ class GPlayer:
 			elif header == SENSOR[0]:
 				print("SENSOR---")
 				sensorList = [[1,'i']]
-				print(indata[1])
-				if indata.decode()[1] == 'd':
+				indata = indata[1:].decode()
+				action = indata[0]
+				if action == 'd': # get device info
 					if self.get_dev_info != None:
 						get_dev_info = self.get_dev_info
 						get_dev_info()
 					else:
 						print("no get_dev_info callback")
-				if indata.decode()[1] == 'm':
+				if action == 'm': # device pin mapping and setting
+					indata = indata[1:]
 					print("Dev mapping:")
-					indata = indata[1:].decode()
-					
 					deviceList = indata.split("\n")
 					for i in deviceList:
 						operation = indata[1]
