@@ -260,7 +260,7 @@ class GPlayer:
 			except:
 				continue
 
-			print(f'message from: {str(addr)}, data: {indata}')
+			print(f'[GP] => message from: {str(addr)}, data: {indata}')
 			
 			indata = indata
 			header = indata[0]
