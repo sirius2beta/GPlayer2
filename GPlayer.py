@@ -342,7 +342,7 @@ class GPlayer:
 						newDev.settings = metaList[3]
 						for j in newDev.pinIDList:
 							print(f' -Device Pin:{j}')
-						print(f' -type:{Device.type}')
+						print(f' -type:{newDev.type}')
 						print(f' -settings:{newDev.settings}')
 					if self.on_setDevice != None:
 						on_setDevice = self.on_setDevice
