@@ -312,7 +312,7 @@ class GPlayer:
 				print("SENSOR---")
 				sensorList = [[1,'i']]
 				print(indata[1])
-				if indata[1] == b'd'[0]:
+				if indata[1] == 'd':
 					if self.get_dev_info != None:
 						get_dev_info = self.get_dev_info
 						get_dev_info()
