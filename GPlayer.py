@@ -320,7 +320,11 @@ class GPlayer:
 						print("no get_dev_info callback")
 				if indata.decode()[1] == 'm':
 					print("Dev mapping:")
-					print(indata.decode())
+					indata = indata[1:]
+					
+					deviceList = indata.split("\n")
+					for i in deviceList:
+						print(i)
 					if self.on_setsensor != None:
 						on_setsensor = self.on_setsensor
 						#on_setsensor(sensorList)
