@@ -324,6 +324,12 @@ class GPlayer:
 					
 					deviceList = indata.split("\n")
 					for i in deviceList:
+						operation = indata[0]
+						metaList = indata[1:].split(',')
+						print(f'Periphral ID:{metaList[0]}')
+						print(f'Device ID:{metaList[1]}')
+						print(f'type:{metaList[2]}')
+						print(f'settings:{metaList[3]}')
 						print(i)
 					if self.on_setsensor != None:
 						on_setsensor = self.on_setsensor
