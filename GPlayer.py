@@ -312,16 +312,18 @@ class GPlayer:
 				print("SENSOR---")
 				sensorList = [[1,'i']]
 				print(indata[1])
-				if indata[1].decode() == 'd':
+				if indata.decode()[1] == 'd':
 					if self.get_dev_info != None:
 						get_dev_info = self.get_dev_info
 						get_dev_info()
 					else:
 						print("no get_dev_info callback")
-				if indata[1] == 'm':
+				if indata.decode()[1] == 'm':
+					print("Dev mapping:")
+					print(indata.decode())
 					if self.on_setsensor != None:
 						on_setsensor = self.on_setsensor
-						on_setsensor(sensorList)
+						#on_setsensor(sensorList)
 					else:
 						print("no on_setsensor callback")
 			elif header == QUIT[0]:
