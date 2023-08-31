@@ -320,7 +320,7 @@ class GPlayer:
 						print("no get_dev_info callback")
 				if indata.decode()[1] == 'm':
 					print("Dev mapping:")
-					indata = indata[1:]
+					indata = indata[1:].decode()
 					
 					deviceList = indata.split("\n")
 					for i in deviceList:
