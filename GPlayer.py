@@ -324,8 +324,8 @@ class GPlayer:
 					print("Dev mapping:")
 					deviceList = indata.split("\n")
 					for i in deviceList:
-						operation = indata[1]
-						metaList = indata[2:].split(',')
+						operation = indata[0]
+						metaList = indata[1:].split(',')
 						pinList = metaList[0].split()
 						for j in pinList:
 							print(f'Device Pin:{j}')
