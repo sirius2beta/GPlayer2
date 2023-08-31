@@ -267,7 +267,8 @@ class GPlayer:
 				ip = f"{indata[3]}.{indata[2]}.{indata[1]}.{indata[0]}"
 				self.BOAT_ID = indata[4]
 				primary = indata[5:].decode()
-				print(f"id:{self.BOAT_ID}, primary:{primary}")
+				print("[HEARTBEAT]")
+				print(f" -id:{self.BOAT_ID}, primary:{primary}")
 				if primary == 'P':
 					self.P_CLIENT_IP = indata.split()[0]
 					self.P_CLIENT_IP = ip
@@ -279,7 +280,7 @@ class GPlayer:
 
 			elif header == FORMAT[0]:
 				indata = indata[1:].decode()
-				print("FORMAT---")
+				print("[FORMAT]")
 				msg = chr(self.BOAT_ID)+"\n".join(self.camera_format)
 				msg = FORMAT + msg.encode()
 
@@ -289,7 +290,7 @@ class GPlayer:
 				
 			elif header == COMMAND[0]:
 				indata = indata[1:].decode()
-				print("COMMAND---")
+				print("[COMMAND]")
 				print(indata)
 				cformat = indata.split()[:5]
 
@@ -317,7 +318,7 @@ class GPlayer:
 						self.pipelines[videoindex].set_state(Gst.State.PLAYING)
 						self.pipelines_state[videoindex] = True
 			elif header == SENSOR[0]:
-				print("SENSOR---")
+				print("[SENSOR]")
 				sensorList = [[1,'i']]
 				indata = indata[1:].decode()
 				action = indata[0]
@@ -351,7 +352,7 @@ class GPlayer:
 					else:
 						print("no on_setDevice callback")
 			elif header == QUIT[0]:
-				print("QUIT---")
+				print("[QUIT]")
 				indata = indata[1:].decode()
 				#video = int(indata.split()[1][5:])
 				#if video in self.pipelinesexist:
