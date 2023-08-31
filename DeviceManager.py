@@ -80,9 +80,9 @@ class DeviceManager:
 					id_exist.append(id)
 					self.registered_dev_list.append([idProduct, idVendor, SYMLINK, id])
 			
-		print(f"Registered device:")
+		print(f"DM::Registered device:")
 		for i in self.registered_dev_list:
-			print(f"P:{i[0]}, V:{i[1]}, M:{i[2]}")
+			print(f" -P:{i[0]}, V:{i[1]}, M:{i[2]}")
 	
 		
 		# compare exist and added device
@@ -92,7 +92,6 @@ class DeviceManager:
 				if (i[0] == j[0]) and (i[1] == j[1]):
 					i[3] = "/dev/"+j[2]
 					i.append(j[3])
-					print("device exist")
 					add = False
 			if add:	
 				n = 0
@@ -105,9 +104,9 @@ class DeviceManager:
 				udev_file.write(f"ATTRS{{idProduct}}=={i[0]}, ATTRS{{idVendor}}=={i[1]}, SYMLINK+=\"PD{n}\", MODE=\"0777\"\n")
 				i.append(n)
 		udev_file.close()
-		print(f"Current device:")
+		print(f"DM::Current device:")
 		for i in self.current_dev_list:
-			print(f"P:{i[0]}, V:{i[1]}, M:{i[2]}, D:{i[3]}, ID:{i[4]}")
+			print(f" -P:{i[0]}, V:{i[1]}, M:{i[2]}, D:{i[3]}, ID:{i[4]}")
 					
 		
 		
