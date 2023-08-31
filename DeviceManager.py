@@ -3,7 +3,7 @@ import threading
 import subprocess
 import serial
 SENSOR = b'\x50'
-class SensorManager:
+class DeviceManager:
 	
 		
 	def __init__(self):
@@ -11,7 +11,7 @@ class SensorManager:
 		
 		self.name = 'sensor'
 		self._on_message = None
-		self._sensorList = [[1,'i']]
+		self._deviceList = [[1,'i']]
 		self.thread_terminate = False
 		self.thread_sensor = threading.Thread(target=self.sensorLoop)
 		self.thread_sensor.start()
@@ -161,16 +161,16 @@ class SensorManager:
 				except:
 					print(f"Sensor failed")	
 	
-	def setSensor(self, slist):
-		self._sensorList = slist
-		#for sensor in self._sensorList:
-		#	print(f'setsensor: sensor:{sensor[0]}, {sensor[1]}')
+	def setDevice(self, slist):
+		self._deviceList = slist
+		#for sensor in self._deviceList:
+		#	print(f'setDevice: sensor:{sensor[0]}, {sensor[1]}')
 	@property
 	def sensorList(self):
 		return self.sensorList
 	@sensorList.setter
 	def sensorList(self, slist):
-		self._sensorList = slist
+		self._deviceList = slist
 	@property
 	def on_message(self):
 		return self._on_message
