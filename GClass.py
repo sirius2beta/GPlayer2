@@ -4,7 +4,7 @@ class Peripheral:
 		self.idVendor = idVendor
 		# 未來加入bcdDevice 作為識別
 		self.manufacturer = manufacturer
-		self.dev = index
+		self.dev = dev
 		self.ID = ID
 	
 	
