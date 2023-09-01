@@ -2,6 +2,8 @@ import time
 import threading
 import subprocess
 import serial
+import GClass as GC
+
 SENSOR = b'\x50'
 class DeviceManager:
 	
@@ -15,6 +17,10 @@ class DeviceManager:
 		self.thread_terminate = False
 		self.thread_sensor = threading.Thread(target=self.sensorLoop)
 		self.thread_sensor.start()
+
+		self.savedPeriphrals = []
+		self.currentPeriperals = []
+		self.registeredPeriphrals = []
 		
 		# get all tty* device (ACM, USB..)
 		cmd = "ls /dev/tty*"
@@ -33,7 +39,6 @@ class DeviceManager:
 			elif i.find("ttyAMA") != -1:
 				devlist.append(i)
 		# find device detail
-		self.current_dev_list = []
 		idProduct = ''
 		for i in devlist:
 			cmd = f"udevadm info -a -p  $(udevadm info -q path -n {i})"
@@ -55,12 +60,12 @@ class DeviceManager:
 					manufacturer = word[1][1:-1] # only take first word for identification
 					count += 1
 				if count == 3:
-					self.current_dev_list.append([idProduct, idVendor, manufacturer, i])
+					self.currentPeriperals.append(GC.Peripheral(idProduct, idVendor, manufacturer, i))
 					break
 
 		udev_file = open('/etc/udev/rules.d/79-sir.rules','r+')
 		lines = udev_file.readlines()
-		self.registered_dev_list = []
+
 		
 		# generate registerd dev list
 		id_exist = [] # specific number for PD that exist, e.g PD0, PD1, PD5...
@@ -78,20 +83,20 @@ class DeviceManager:
 					SYMLINK = wc[1][1:-1]
 					id = int(SYMLINK[2:])
 					id_exist.append(id)
-					self.registered_dev_list.append([idProduct, idVendor, SYMLINK, id])
+					self.savedPeriphrals.append(idProduct, idVendor, "", "", id)
 			
 		print(f"DM::Registered device:")
-		for i in self.registered_dev_list:
-			print(f" -P:{i[0]}, V:{i[1]}, M:{i[2]}")
+		for i in self.savedPeriphrals:
+			print(f" -P:{savedPeriphrals.idProduct}, V:{savedPeriphrals.inVendor}, M:{savedPeriphrals.ID}")
 	
 		
 		# compare exist and added device
-		for i in self.current_dev_list:
+		for i in self.currentPeriperals:
 			add = True
-			for j in self.registered_dev_list:
-				if (i[0] == j[0]) and (i[1] == j[1]):
-					i[3] = "/dev/"+j[2]
-					i.append(j[3])
+			for j in self.savedPeriphrals:
+				if (i.idProduct  == j.idProduct) and (i.idVendor == j.idVendor):
+					i.dev = "/dev/"+j.dev
+					i.ID = j.ID
 					add = False
 			if add:	
 				n = 0
@@ -102,10 +107,10 @@ class DeviceManager:
 						id_exist.append(n)
 						break
 				udev_file.write(f"ATTRS{{idProduct}}=={i[0]}, ATTRS{{idVendor}}=={i[1]}, SYMLINK+=\"PD{n}\", MODE=\"0777\"\n")
-				i.append(n)
+				i.ID = n
 		udev_file.close()
 		print(f"DM::Current device:")
-		for i in self.current_dev_list:
+		for i in self.currentPeriperals:
 			print(f" -P:{i[0]}, V:{i[1]}, M:{i[2]}, D:{i[3]}, ID:{i[4]}")
 					
 		
@@ -119,7 +124,7 @@ class DeviceManager:
 		sensorMsg = b""
 		sensorMsg += bytes('r', 'ascii')
 		Msg=""
-		for i in self.current_dev_list:
+		for i in self.currentPeriperals:
 			",".join(map(str,i))
 			Msg+= ",".join(map(str,i))+"\n"
 		sensorMsg += bytes(Msg, 'ascii')
