@@ -18,7 +18,7 @@ class DeviceManager:
 		self.thread_sensor = threading.Thread(target=self.sensorLoop)
 		self.thread_sensor.start()
 
-		self.savedPeriphrals = []
+		self.savedPeripherals = []
 		self.currentPeriperals = []
 		self.registeredPeriphrals = []
 		
@@ -83,17 +83,17 @@ class DeviceManager:
 					SYMLINK = wc[1][1:-1]
 					id = int(SYMLINK[2:])
 					id_exist.append(id)
-					self.savedPeriphrals.append(GC.Peripheral(idProduct, idVendor, "", "", id))
+					self.savedPeripherals.append(GC.Peripheral(idProduct, idVendor, "", "", id))
 			
 		print(f"DM::Registered device:")
-		for i in self.savedPeriphrals:
+		for i in self.savedPeripherals:
 			print(f" -P:{self.savedPeripherals[i].idProduct}, V:{self.savedPeripherals[i].inVendor}, M:{self.savedPeripherals[i].ID}")
 	
 		
 		# compare exist and added device
 		for i in self.currentPeriperals:
 			add = True
-			for j in self.savedPeriphrals:
+			for j in self.savedPeripherals:
 				if (i.idProduct  == j.idProduct) and (i.idVendor == j.idVendor):
 					i.dev = "/dev/"+j.dev
 					i.ID = j.ID
