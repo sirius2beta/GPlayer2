@@ -83,7 +83,7 @@ class DeviceManager:
 					SYMLINK = wc[1][1:-1]
 					id = int(SYMLINK[2:])
 					id_exist.append(id)
-					self.savedPeripherals.append(GC.Peripheral(idProduct, idVendor, "", "", id))
+					self.savedPeripherals.append(GC.Peripheral(idProduct, idVendor, "", SYMLINK, id))
 			
 		print(f"DM::Registered device:")
 		for i in self.savedPeripherals:
