@@ -1,9 +1,10 @@
 class Peripheral:
-	def __init__(self, idProduct = "", idVendor="", manufacturer="", index="", ID = 0):
+	def __init__(self, idProduct = "", idVendor="", manufacturer="", dev="", ID = 0):
 		self.idProduct = idProduct
 		self.idVendor = idVendor
+		# 未來加入bcdDevice 作為識別
 		self.manufacturer = manufacturer
-		self.index = index
+		self.dev = index
 		self.ID = ID
 	
 	
