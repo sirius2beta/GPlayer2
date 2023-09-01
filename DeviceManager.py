@@ -126,7 +126,7 @@ class DeviceManager:
 		Msg=""
 		for i in self.currentPeriperals:
 			",".join(map(str,i.getList()))
-			Msg+= ",".join(map(str,i.getlist()))+"\n"
+			Msg+= ",".join(map(str,i.getList()))+"\n"
 		sensorMsg += bytes(Msg, 'ascii')
 		#print(sensorMsg)
 
