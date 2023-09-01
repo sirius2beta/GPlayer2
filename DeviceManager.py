@@ -111,7 +111,7 @@ class DeviceManager:
 		udev_file.close()
 		print(f"DM::Current device:")
 		for i in self.currentPeriperals:
-			print(f" -P:{i[0]}, V:{i[1]}, M:{i[2]}, D:{i[3]}, ID:{i[4]}")
+			print(f" -P:{i.idProduct}, V:{i.idVendor}, M:{i.manufacturer}, D:{i.dev}, ID:{i.ID}")
 					
 		
 		
