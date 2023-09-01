@@ -1,4 +1,8 @@
-class _Device:
+class Peripheral:
+	ID = ""
+	
+
+class Device:
 	ID = ""
 	#deviceName = ""
 	type = ""
