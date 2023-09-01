@@ -87,7 +87,7 @@ class DeviceManager:
 			
 		print(f"DM::Registered device:")
 		for i in self.savedPeriphrals:
-			print(f" -P:{savedPeripherals.idProduct}, V:{savedPeripherals.inVendor}, M:{savedPeripherals.ID}")
+			print(f" -P:{self.savedPeripherals.idProduct}, V:{self.savedPeripherals.inVendor}, M:{self.savedPeripherals.ID}")
 	
 		
 		# compare exist and added device
