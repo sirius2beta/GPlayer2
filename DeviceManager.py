@@ -83,7 +83,7 @@ class DeviceManager:
 					SYMLINK = wc[1][1:-1]
 					id = int(SYMLINK[2:])
 					id_exist.append(id)
-					self.savedPeriphrals.append(idProduct, idVendor, "", "", id)
+					self.savedPeriphrals = GC.Periphral(idProduct, idVendor, "", "", id)
 			
 		print(f"DM::Registered device:")
 		for i in self.savedPeriphrals:
