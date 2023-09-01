@@ -6,6 +6,8 @@ class Peripheral:
 		self.manufacturer = manufacturer
 		self.dev = dev
 		self.ID = ID
+	def getList(self):
+		return [self.idProduct, self.idVendor, self.manufacturer, self.dev, self.ID]
 	
 	
 	
