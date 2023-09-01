@@ -5,6 +5,7 @@ import time
 import threading
 import socket
 import struct
+import GClass as GC
 
 HEARTBEAT = b'\x10'
 FORMAT = b'\x20'
@@ -15,12 +16,7 @@ SENSOR = b'\x50'
 gi.require_version("Gst", "1.0")
 from gi.repository import Gst, GLib, GObject
 
-class _Device:
-	ID = ""
-	#deviceName = ""
-	type = ""
-	settings = ""
-	pinIDList = []
+
 
 # update
 def getFormatCMD(sys, cam, format, width, height, framerate, encoder, IP, port):
@@ -335,7 +331,7 @@ class GPlayer:
 					indata = indata[1:]
 					print("Dev mapping:")
 					deviceList = indata.split("\n")
-					newDev = _Device()
+					newDev = GC.Device()
 					for i in deviceList:
 						operation = indata[0]
 						metaList = indata[1:].split(',')
