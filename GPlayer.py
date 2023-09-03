@@ -352,13 +352,12 @@ class GPlayer:
 						print("no on_setDevice callback")
 			elif header == QUIT[0]:
 				print("[QUIT]")
-				indata = indata[1:].decode()
-				#video = int(indata.split()[1][5:])
-				#if video in self.pipelinesexist:
-				#	videoindex = self.pipelinesexist.index(video)
-				#	self.pipelines[videoindex].set_state(Gst.State.NULL)
-				#	self.pipelines_state[videoindex] = False
-				#	print("quit : video"+str(video))
+				video = int(indata[6:].decode())
+				if video in self.pipelinesexist:
+					videoindex = self.pipelinesexist.index(video)
+					self.pipelines[videoindex].set_state(Gst.State.NULL)
+					self.pipelines_state[videoindex] = False
+					print("quit : video"+str(video))
 
 	@property
 	def on_setDevice(self):
