@@ -6,6 +6,7 @@ import threading
 import socket
 import struct
 import GClass as GC
+import VideoFormat as VF
 
 HEARTBEAT = b'\x10'
 FORMAT = b'\x20'
@@ -16,64 +17,6 @@ SENSOR = b'\x50'
 gi.require_version("Gst", "1.0")
 from gi.repository import Gst, GLib, GObject
 
-
-
-# update
-def getFormatCMD(sys, cam, format, width, height, framerate, encoder, IP, port):
-		gstring = 'v4l2src device=/dev/'+cam
-		mid = 'nan'
-		if format == 'YUYV':
-			format = 'YUY2'
-			gstring += ' num-buffers=-1 ! video/x-raw,format={},width={},height={},framerate={}/1 ! '.format(format, width, height, framerate)
-			if mid != 'nan':
-				gstring += (mid+' ! ')
-			if encoder == 'h264':
-				if sys == 'buster':
-					gstring +=' videoconvert ! omxh264enc ! rtph264pay pt=96 config-interval=1 ! udpsink host={} port={}'.format(IP, port)
-				else:
-					gstring +='nvvideoconvert ! nvv4l2h264enc ! rtph264pay pt=96 config-interval=1 ! udpsink host={} port={}'.format(IP, port)	
-			else:
-				gstring +='jpegenc quality=30 ! rtpjpegpay ! udpsink host={} port={}'.format(IP, port)
-		elif format == 'MJPG':
-			gstring += ' num-buffers=-1 ! image/jpeg,width={},height={},framerate={}/1 ! '.format(width, height, framerate)
-			if mid != 'nan':
-				gstring += (mid+' ! ')
-			if encoder == 'h264':
-				if sys == 'buster':
-					gstring +=' jpegparse ! jpegdec ! videoconvert ! omxh264enc ! rtph264pay pt=96 config-interval=1 ! udpsink host={} port={}'.format(IP, port)
-				else:
-					gstring +='jpegparse ! jpegdec ! videoconvert ! videoconvert   ! nvvideoconvert ! nvv4l2h264enc ! rtph264pay pt=96 config-interval=1 ! udpsink host={} port={}'.format(IP, port)	
-			else:
-				gstring +='jpegparse ! jpegdec ! jpegenc quality=30 ! rtpjpegpay ! udpsink host={} port={}'.format(IP, port)
-
-		elif format == 'GREY':
-			gstring += ' num-buffers=-1 ! video/x-raw,format=GRAY8 ! videoscale ! videoconvert ! video/x-raw, format=YUY2, width=640,height=480 ! '
-			if mid != 'nan':
-				gstring += (mid+' ! ')
-			if encoder == 'h264':
-				if sys == 'buster':
-					gstring +='videoconvert ! omxh264enc ! rtph264pay pt=96 config-interval=1 ! udpsink host={} port={}'.format(IP, port)
-				else:
-					gstring +='videoconvert !  nvvideoconvert ! nvv4l2h264enc ! rtph264pay pt=96 config-interval=1 ! udpsink host={} port={}'.format(IP, port)
-
-			else:
-				gstring +='jpegenc quality=30 ! rtpjpegpay ! udpsink host={} port={}'.format(IP, port)
-		else:
-			if format == 'RGBP':
-				format = 'RGB16'
-			elif format == 'BGR8':
-				format = 'BGR'
-			elif format == 'Y1':
-				format = 'UYVY'
-			gstring += ' num-buffers=-1 ! video/x-raw,format={}! videoscale ! videoconvert ! video/x-raw, format=YUY2, width=640,height=480 ! '.format(format)
-			if mid != 'nan':
-				gstring += (mid+' ! ')
-			if encoder == 'h264':
-				gstring +='videoconvert ! omxh264enc ! rtph264pay pt=96 config-interval=1 ! udpsink host={} port={}'.format(IP, port)
-
-			else:
-				gstring +='jpegenc quality=30 ! rtpjpegpay ! udpsink host={} port={}'.format(IP, port)
-		return gstring
 
 
 class GPlayer:
@@ -102,8 +45,6 @@ class GPlayer:
 		Gst.init(None)
 
 		self.createPipelines()
-		
-
 
 		self.server = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 		self.client = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -112,24 +53,24 @@ class GPlayer:
 		
 		self.thread_terminate = False
 		self.lock = threading.Lock()
-		
-		
+
 		
 	def __del__(self):
 		self.thread_terminate = True
 		self.thread_cli.join()
 		self.thread_ser.join()
+
 	def startLoop(self):
 		self.thread_cli = threading.Thread(target=self.aliveLoop)
 		self.thread_ser = threading.Thread(target=self.listenLoop)
-
 		self.thread_cli.start()
 		self.thread_ser.start()
+
 	def test(self, msg):
 		print(f"called outside: {msg}")
+
 	def sendMsg(self, topic, msg):
-		# Send primary heartbeat every 0.5s
-		
+		# Send message from outside
 		msg = topic + bytes(chr(self.BOAT_ID),'ascii') + msg
 		print(f"sendMsg:\n -topic:{msg[0]}\n -msg: {msg}")
 		try:
@@ -300,7 +241,7 @@ class GPlayer:
 				if(' '.join(cformat) not in self.camera_format):
 					print('format error')
 				else:
-					gstring = getFormatCMD('buster', cformat[0], cformat[1], cformat[2].split('=')[1], cformat[3].split('=')[1],cformat[4].split('=')[1], encoder, ip, port)
+					gstring = VF.getFormatCMD('buster', cformat[0], cformat[1], cformat[2].split('=')[1], cformat[3].split('=')[1],cformat[4].split('=')[1], encoder, ip, port)
 					print(gstring)
 					print(cformat[1])
 					print(cformat[1][5:])
@@ -357,7 +298,7 @@ class GPlayer:
 					videoindex = self.pipelinesexist.index(video)
 					self.pipelines[videoindex].set_state(Gst.State.NULL)
 					self.pipelines_state[videoindex] = False
-					print("quit : video"+str(video))
+					print("  -quit : video"+str(video))
 
 	@property
 	def on_setDevice(self):
