@@ -3,24 +3,23 @@ import threading
 import subprocess
 import serial
 import GClass as GC
+import GClass
 
 SENSOR = b'\x50'
 class DeviceManager:
 	
 		
 	def __init__(self):
-		
-		
-		self.name = 'sensor'
+		self.savedPeripherals = []
+		self.currentPeriperals = []
+		self.registeredPeriphrals = []
+		self.devices = []
+
 		self._on_message = None
 		self._deviceList = [[1,'i']]
 		self.thread_terminate = False
 		self.thread_sensor = threading.Thread(target=self.sensorLoop)
 		self.thread_sensor.start()
-
-		self.savedPeripherals = []
-		self.currentPeriperals = []
-		self.registeredPeriphrals = []
 		
 		# get all tty* device (ACM, USB..)
 		cmd = "ls /dev/tty*"
@@ -88,6 +87,7 @@ class DeviceManager:
 		print(f"DM::Registered device:")
 		for i in self.savedPeripherals:
 			print(f" -P:{i.idProduct}, V:{i.idVendor}, M:{i.ID}")
+			i.connect()
 	
 		
 		# compare exist and added device
@@ -108,11 +108,12 @@ class DeviceManager:
 						break
 				udev_file.write(f"ATTRS{{idProduct}}=={i[0]}, ATTRS{{idVendor}}=={i[1]}, SYMLINK+=\"PD{n}\", MODE=\"0777\"\n")
 				i.ID = n
+			
 		udev_file.close()
 		print(f"DM::Current device:")
 		for i in self.currentPeriperals:
 			print(f" -P:{i.idProduct}, V:{i.idVendor}, M:{i.manufacturer}, D:{i.dev}, ID:{i.ID}")
-					
+			i.connect()
 		
 		
 		
@@ -138,36 +139,53 @@ class DeviceManager:
 				print(f"Sensor failed")	
 	def sensorLoop(self):
 		value = 0
-		num_sensor = chr(1)
+
+		
+		
 		while self.thread_terminate == False:
+			content = b''
+			count = 0
+			for cp in self.currentPeriperals:
+				if cp.IO != None:
+					indata = cp.read()
+					content+=indata
+					count+=1
+			if content != b'':	
+				if self._on_message != None:
+					try:
+						on_message = self.on_message
+						on_message(SENSOR, content)
+						time.sleep(1)
+					except:
+						print(f"Sensor failed")			
 			
-	
-			value += 1;
-			sensorMsg = SENSOR
-			sensorMsg += bytes(num_sensor, 'ascii')
-			sensorMsg += bytes('i', 'ascii')
-			sensorMsg+=bytes(chr(1),'ascii')
-			sensorMsg+=bytes(chr(1),'ascii')
-			sensorMsg+=value.to_bytes(4, 'big')
-			sensorMsg += bytes('i', 'ascii')
-			sensorMsg+=bytes(chr(1),'ascii')
-			sensorMsg+=bytes(chr(0),'ascii')
-			sensorMsg+=int(value/2).to_bytes(4, 'big')
+			
+			
+			#value += 1;
+			#sensorMsg = SENSOR
+			#sensorMsg += bytes(num_sensor, 'ascii')
+			#sensorMsg += bytes('i', 'ascii')
+			#sensorMsg+=bytes(chr(1),'ascii')
+			#sensorMsg+=bytes(chr(1),'ascii')
+			#sensorMsg+=value.to_bytes(4, 'big')
+			#sensorMsg += bytes('i', 'ascii')
+			#sensorMsg+=bytes(chr(1),'ascii')
+			#sensorMsg+=bytes(chr(0),'ascii')
+			#sensorMsg+=int(value/2).to_bytes(4, 'big')
+			
 			
 			if self.thread_terminate is True:
 				break
-			if self._on_message != None:
-				try:
-					on_message = self.on_message
-					#on_message(SENSOR, sensorMsg)
-					time.sleep(1)
-				except:
-					print(f"Sensor failed")	
+			
 	
 	def setDevice(self, slist):
 		self._deviceList = slist
 		#for sensor in self._deviceList:
 		#	print(f'setDevice: sensor:{sensor[0]}, {sensor[1]}')
+
+	def addDevice(self, device):
+		# register device
+		self.devices.append(device)
 	@property
 	def sensorList(self):
 		return self.sensorList

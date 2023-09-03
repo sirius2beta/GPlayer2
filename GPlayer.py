@@ -7,17 +7,10 @@ import socket
 import struct
 import GClass as GC
 import VideoFormat as VF
-
-HEARTBEAT = b'\x10'
-FORMAT = b'\x20'
-COMMAND = b'\x30'
-QUIT = b'\x40'
-SENSOR = b'\x50'
+import DeviceManager as DM
 
 gi.require_version("Gst", "1.0")
 from gi.repository import Gst, GLib, GObject
-
-
 
 class GPlayer:
 	def __init__(self):
@@ -41,6 +34,9 @@ class GPlayer:
 		self._on_setDevice = None
 		self._get_dev_info = None
 		
+		self.deviceManager = DM.DeviceManager()
+		self.deviceManager.on_message = self.sendMsg
+
 		GObject.threads_init()
 		Gst.init(None)
 
@@ -263,11 +259,13 @@ class GPlayer:
 				indata = indata[1:].decode()
 				action = indata[0]
 				if action == 'd': # get device info
-					if self.get_dev_info != None:
-						get_dev_info = self.get_dev_info
-						get_dev_info()
-					else:
-						print("no get_dev_info callback")
+					self.deviceManager.get_dev_info()
+					#if self.get_dev_info != None:
+					#	get_dev_info = self.get_dev_info
+					#	get_dev_info()
+						
+					#else:
+					#	print("no get_dev_info callback")
 				if action == 'm': # device pin mapping and setting
 					indata = indata[1:]
 					print("Dev mapping:")
@@ -276,9 +274,9 @@ class GPlayer:
 					for i in deviceList:
 						operation = indata[0]
 						metaList = indata[1:].split(',')
+
 						newDev.ID = metaList[0]
 						newDev.pinIDList = metaList[1].split()
-						
 						newDev.type = metaList[2]
 						newDev.settings = metaList[3]
 						print(f' -ID:{newDev.ID}')
@@ -286,11 +284,13 @@ class GPlayer:
 							print(f' -Device Pin:{j}')
 						print(f' -type:{newDev.type}')
 						print(f' -settings:{newDev.settings}')
-					if self.on_setDevice != None:
-						on_setDevice = self.on_setDevice
+						self.deviceManager.addDevice(newDev)
+
+					#if self.on_setDevice != None:
+					#	on_setDevice = self.on_setDevice
 						#on_setDevice(sensorList)
-					else:
-						print("no on_setDevice callback")
+					#else:
+					#	print("no on_setDevice callback")
 			elif header == QUIT[0]:
 				print("[QUIT]")
 				video = int(indata[6:].decode())
